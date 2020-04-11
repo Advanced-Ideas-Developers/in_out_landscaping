@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'HomePage.dart';
 
 void main() {
   runApp(InOutLandScaping());
@@ -8,7 +9,7 @@ class InOutLandScaping extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Control de Horas',
+      title: 'Login',
       home: Login(),
       theme: ThemeData(
           primaryColor: Colors.greenAccent[700], accentColor: Colors.black),
@@ -24,15 +25,19 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
+
     final txtUsername = TextField(
-      decoration: InputDecoration(labelText: 'Nombre de Usuario'),
-    );
+        controller: usernameController,
+        decoration: InputDecoration(
+            labelText: 'Nombre de Usuario', contentPadding: EdgeInsets.all(8)));
 
     final txtPassword = TextField(
+      controller: passwordController,
       obscureText: true,
       decoration: InputDecoration(
-        labelText: 'Contraseña',
-      ),
+          labelText: 'Contraseña', contentPadding: EdgeInsets.all(8)),
     );
 
     return Scaffold(
@@ -80,6 +85,8 @@ class _LoginState extends State<Login> {
             ),
           ),
           Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.47,
             padding: EdgeInsets.all(15),
             child: Column(
               /* mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +149,12 @@ class _LoginState extends State<Login> {
                         ),
                         padding: EdgeInsets.only(
                             left: 10, right: 10, top: 10, bottom: 10),
-                        onPressed: () {},
+                        onPressed: () {
+                          if(usernameController != null && usernameController.text == 'abc'
+                          && passwordController != null && passwordController.text == '123'){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                          }
+                        },
                         color: Colors.orangeAccent,
                         elevation: 0,
                       ),
@@ -152,20 +164,6 @@ class _LoginState extends State<Login> {
           ),
         ],
       ),
-
-      /* Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(10),
-              margin: EdgeInsets.all(10),
-              child: Text(
-                'Login',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30
-                ),
-              ),
-            ), */
     );
   }
 }
