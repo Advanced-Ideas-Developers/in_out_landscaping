@@ -9,7 +9,7 @@ class InOutLandScaping extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login',
+      title: 'InOutLandscaping',
       home: Login(),
       theme: ThemeData(
           primaryColor: Colors.greenAccent[700], accentColor: Colors.black),
