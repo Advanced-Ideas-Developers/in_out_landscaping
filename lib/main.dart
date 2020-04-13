@@ -12,7 +12,7 @@ class InOutLandScaping extends StatelessWidget {
       title: 'InOutLandscaping',
       home: Login(),
       theme: ThemeData(
-          primaryColor: Colors.greenAccent[700], accentColor: Colors.black),
+          primaryColor: Colors.greenAccent[700], accentColor: Colors.black, dividerColor: Colors.green),
     );
   }
 }
@@ -23,10 +23,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    final usernameController = TextEditingController();
-    final passwordController = TextEditingController();
 
     final txtUsername = TextField(
         controller: usernameController,
@@ -152,7 +154,7 @@ class _LoginState extends State<Login> {
                         onPressed: () {
                           if(usernameController != null && usernameController.text == 'abc'
                           && passwordController != null && passwordController.text == '123'){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
                           }
                         },
                         color: Colors.orangeAccent,
