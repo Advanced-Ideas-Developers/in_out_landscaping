@@ -9,10 +9,17 @@ class InOutLandScaping extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'InOutLandscaping',
+      title: 'In Out Landscaping',
       home: Login(),
       theme: ThemeData(
-          primaryColor: Colors.greenAccent[700], accentColor: Colors.black),
+          primaryColor: Colors.teal[800],
+          accentColor: Colors.teal[300],
+          tabBarTheme: TabBarTheme(
+            labelColor: Colors.black,
+            labelStyle: TextStyle(fontSize: 12),
+            unselectedLabelStyle: TextStyle(fontSize: 11)
+          )
+      ),
     );
   }
 }
@@ -23,17 +30,20 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    final usernameController = TextEditingController();
-    final passwordController = TextEditingController();
-
     final txtUsername = TextField(
+        autofocus: false,
         controller: usernameController,
         decoration: InputDecoration(
-            labelText: 'Nombre de Usuario', contentPadding: EdgeInsets.all(8)));
+            labelText: 'Nombre de Usuario', contentPadding: EdgeInsets.all(8)),
+    );
 
     final txtPassword = TextField(
+      autocorrect: false,
       controller: passwordController,
       obscureText: true,
       decoration: InputDecoration(
@@ -79,14 +89,14 @@ class _LoginState extends State<Login> {
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Colors.black, Colors.green],
+                  colors: [Colors.teal[300], Colors.teal[800]],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomLeft),
             ),
           ),
           Container(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.47,
+            //height: MediaQuery.of(context).size.height * 0.47,
             padding: EdgeInsets.all(15),
             child: Column(
               /* mainAxisAlignment: MainAxisAlignment.center,
@@ -141,29 +151,58 @@ class _LoginState extends State<Login> {
                           offset: Offset(0, 8)),
                     ]),
                     child: ButtonTheme(
-                      minWidth: 300,
-                      child: RaisedButton(
-                        child: Text(
-                          'Acceder',
-                          style: TextStyle(fontSize: 25, color: Colors.white),
-                        ),
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 10),
-                        onPressed: () {
-                          if(usernameController != null && usernameController.text == 'abc'
-                          && passwordController != null && passwordController.text == '123'){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
-                          }
-                        },
-                        color: Colors.orangeAccent,
-                        elevation: 0,
-                      ),
-                    )),
+                        minWidth: 150,
+                        child: Builder(
+                          builder: (context) => RaisedButton(
+                            child: Text(
+                              'Acceder',
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            onPressed: () => _login(context),
+                            color: Colors.orangeAccent,
+                            elevation: 0,
+                          ),
+                        ))),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _login(context) {
+    if (usernameController != null &&
+        usernameController.text == 'abc' &&
+        passwordController != null &&
+        passwordController.text == '123') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+      usernameController.clear();
+      passwordController.clear();
+    } else {
+      final snackBar = SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Icon(
+              Icons.error,
+              color: Colors.redAccent,
+            ),
+            Text('Usuario y/o Contraseña incorrecta')
+          ],
+        ),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
+          textColor: Colors.orange,
+        ),
+        
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 }
