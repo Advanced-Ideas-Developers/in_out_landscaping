@@ -9,10 +9,12 @@ class InOutLandScaping extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'InOutLandscaping',
+      title: 'In Out Landscaping',
       home: Login(),
       theme: ThemeData(
-          primaryColor: Colors.greenAccent[700], accentColor: Colors.black, dividerColor: Colors.green),
+          primaryColor: Colors.greenAccent[700],
+          accentColor: Colors.black,
+          dividerColor: Colors.green),
     );
   }
 }
@@ -23,13 +25,11 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
     final txtUsername = TextField(
         controller: usernameController,
         decoration: InputDecoration(
@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
           ),
           Container(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.47,
+            //height: MediaQuery.of(context).size.height * 0.47,
             padding: EdgeInsets.all(15),
             child: Column(
               /* mainAxisAlignment: MainAxisAlignment.center,
@@ -143,29 +143,56 @@ class _LoginState extends State<Login> {
                           offset: Offset(0, 8)),
                     ]),
                     child: ButtonTheme(
-                      minWidth: 300,
-                      child: RaisedButton(
-                        child: Text(
-                          'Acceder',
-                          style: TextStyle(fontSize: 25, color: Colors.white),
-                        ),
-                        padding: EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 10),
-                        onPressed: () {
-                          if(usernameController != null && usernameController.text == 'abc'
-                          && passwordController != null && passwordController.text == '123'){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-                          }
-                        },
-                        color: Colors.orangeAccent,
-                        elevation: 0,
-                      ),
-                    )),
+                        minWidth: 150,
+                        child: Builder(
+                          builder: (context) => RaisedButton(
+                            child: Text(
+                              'Acceder',
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 10),
+                            onPressed: () => _login(context),
+                            color: Colors.orangeAccent,
+                            elevation: 0,
+                          ),
+                        ))),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _login(context) {
+    if (usernameController != null &&
+        usernameController.text == 'abc' &&
+        passwordController != null &&
+        passwordController.text == '123') {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
+    } else {
+      final snackBar = SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Icon(
+              Icons.error,
+              color: Colors.redAccent,
+            ),
+            Text('Usuario y/o Contraseña incorrecta')
+          ],
+        ),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () {},
+          textColor: Colors.orange,
+        ),
+        
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 }
