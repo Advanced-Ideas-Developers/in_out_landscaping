@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
-import 'package:email_validator/email_validator.dart';
+//import 'package:email_validator/email_validator.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+//import 'package:in_out_landscaping/Classes/Globals.dart' as globals;
 
 class AddUserPage extends StatefulWidget {
   @override
@@ -9,9 +10,21 @@ class AddUserPage extends StatefulWidget {
 }
 
 class _AddUserPageState extends State<AddUserPage> {
-  bool _valid = true;
+  //bool _valid = true;
   String selectedEmployee;
-  final emailController = TextEditingController();
+  String selectedUserType;
+
+  final List users = [
+    {'Usuario': 'hamiltong98', 'Contraseña': '123456', 'Tipo': 'admin'},
+    {'Usuario': 'edwinv78', 'Contraseña': 'sape.com', 'Tipo': 'admin'},
+    {'Usuario': 'marlons54', 'Contraseña': '34276', 'Tipo': 'digitador'},
+    {'Usuario': 'franciscos32', 'Contraseña': 'javascript', 'Tipo': 'contador'},
+  ];
+  //Controllers Form
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  //final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +37,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.black, Colors.green]),
+                    colors: [Colors.black, Colors.teal[800]]),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -154,9 +167,8 @@ class _AddUserPageState extends State<AddUserPage> {
               margin: EdgeInsets.only(left: 10, right: 10),
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-                borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
+                  border: Border.all(color: Colors.black),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
               height: 270,
               child: ListView(
                 shrinkWrap: true,
@@ -164,32 +176,68 @@ class _AddUserPageState extends State<AddUserPage> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                      columns: [
-                        DataColumn(
-                            label: Text(
-                          'Usuario',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        )),
-                        DataColumn(
-                            label: Text(
-                          'Contraseña',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        )),
-                        DataColumn(
-                            label: Text(
-                          'Tipo de Usuario',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        )),
-                      ],
-                      rows: [
+                        columns: [
+                          DataColumn(
+                              label: Text(
+                            'Usuario',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Contraseña',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Tipo de Usuario',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          )),
+                        ],
+                        rows: users
+                            .map(((element) => DataRow(
+                                  cells: [
+                                    DataCell(Text(element['Usuario']),
+                                        onTap: () {
+                                      usernameController.text =
+                                          element['Usuario'];
+                                      passwordController.text =
+                                          element['Contraseña'];
+                                      setState(() {
+                                        selectedUserType = element['Tipo'];
+                                      });
+                                    }),
+                                    DataCell(Text(element['Contraseña']),
+                                        onTap: () {
+                                      usernameController.text =
+                                          element['Usuario'];
+                                      passwordController.text =
+                                          element['Contraseña'];
+                                      setState(() {
+                                        selectedUserType = element['Tipo'];
+                                      });
+                                    }),
+                                    DataCell(Text(element['Tipo']), onTap: () {
+                                      usernameController.text =
+                                          element['Usuario'];
+                                      passwordController.text =
+                                          element['Contraseña'];
+                                      setState(() {
+                                        selectedUserType = element['Tipo'];
+                                      });
+                                    }),
+                                  ],
+                                )))
+                            .toList()
+                        /* [
                         DataRow(cells: [
                           DataCell(Text('hamiltong98')),
                           DataCell(Text('1234567')),
                           DataCell(Text('admin')),
-                        ]),
+                        ],
+                        ),
                         DataRow(cells: [
                           DataCell(Text('marlons67')),
                           DataCell(Text('abcdef')),
@@ -205,8 +253,8 @@ class _AddUserPageState extends State<AddUserPage> {
                           DataCell(Text('xyfsa.98')),
                           DataCell(Text('contador')),
                         ]),
-                      ],
-                    ),
+                      ], */
+                        ),
                   ),
                 ],
               ),
@@ -229,6 +277,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     margin: EdgeInsets.only(top: 15),
                     child: TextField(
+                      controller: usernameController,
                       decoration: InputDecoration(
                           labelText: 'Nombre de Usuario',
                           contentPadding: EdgeInsets.only(left: 15),
@@ -245,6 +294,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     margin: EdgeInsets.only(top: 15),
                     child: TextField(
+                      controller: passwordController,
                       decoration: InputDecoration(
                           labelText: 'Contraseña',
                           contentPadding: EdgeInsets.only(left: 15),
@@ -258,7 +308,7 @@ class _AddUserPageState extends State<AddUserPage> {
                       },
                     ),
                   ),
-                  Container(
+                  /* Container(
                     margin: EdgeInsets.only(top: 15),
                     child: TextField(
                       controller: emailController,
@@ -284,8 +334,8 @@ class _AddUserPageState extends State<AddUserPage> {
                       },
                       keyboardType: TextInputType.emailAddress,
                     ),
-                  ),
-                  Container(
+                  ), */
+                  /* Container(
                     margin: EdgeInsets.only(top: 15),
                     child: TextField(
                       decoration: InputDecoration(
@@ -297,10 +347,12 @@ class _AddUserPageState extends State<AddUserPage> {
                       textInputAction: TextInputAction.done,
                       keyboardType: TextInputType.phone,
                     ),
-                  ),
+                  ), */
                   Container(
                     margin: EdgeInsets.only(top: 15, bottom: 15),
                     child: OutlineDropdownButton(
+                      value: selectedUserType,
+
                       inputDecoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius:
@@ -315,9 +367,17 @@ class _AddUserPageState extends State<AddUserPage> {
                           value: 'admin',
                           child: Text('Administrador'),
                         ),
+                        DropdownMenuItem(
+                          value: 'contador',
+                          child: Text('Contador'),
+                        ),
                       ],
                       onChanged: (value) {
                         print(value);
+                        print(selectedEmployee);
+                        setState(() {
+                          selectedUserType = value;
+                        });
                       },
                       hint: Text('Tipo de Usuario'),
                       iconSize: 30,
@@ -359,35 +419,66 @@ class _AddUserPageState extends State<AddUserPage> {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 10, bottom: 40),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    child: Column(
                       children: <Widget>[
-                        FlatButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.check,
-                                  size: 40,
-                                  color: Colors.green[300],
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            FlatButton(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.check,
+                                      size: 40,
+                                      color: Colors.green[300],
+                                    ),
+                                    Text('Aceptar')
+                                  ],
                                 ),
-                                Text('Aceptar')
-                              ],
-                            ),
-                            onPressed: () => _successDialog()),
-                        FlatButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Icon(
-                                Icons.close,
-                                size: 40,
-                                color: Colors.redAccent,
+                                onPressed: () => _successDialog()),
+                            FlatButton(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.delete_outline,
+                                      size: 40,
+                                      color: Colors.orange,
+                                    ),
+                                    Text('Eliminar')
+                                  ],
+                                ),
+                                onPressed: () {}),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            FlatButton(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.close,
+                                    size: 40,
+                                    color: Colors.redAccent,
+                                  ),
+                                  Text('Cancelar')
+                                ],
                               ),
-                              Text('Cancelar')
-                            ],
-                          ),
-                          onPressed: () {},
+                              onPressed: () {
+                                usernameController.clear();
+                                passwordController.clear();
+                                setState(() {
+                                  selectedUserType = null;
+                                });
+                              },
+                            )
+                          ],
                         )
                       ],
                     ),
@@ -412,17 +503,22 @@ class _AddUserPageState extends State<AddUserPage> {
                   '¡Éxito!',
                 ),
               ),
-              content: Container( 
-                height: 85,
+              content: Container(
+                height: 90,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    Text('Usuario Agregado Correctamente', style: TextStyle(fontSize: 18),),
-                    SizedBox(height: 10,),
+                    Text(
+                      'Usuario Agregado Correctamente',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Icon(
                       Icons.check_circle,
                       color: Colors.green,
-                      size: 40,
+                      size: 35,
                     )
                   ],
                 ),

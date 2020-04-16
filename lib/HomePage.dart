@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.black, Colors.green]),
+                        colors: [Colors.black, Colors.teal[800]]),
                   ),
                   alignment: Alignment.centerLeft,
                   child: Stack(
@@ -62,15 +62,42 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       Positioned(
-                        child: FlatButton(
-                          child: Icon(Icons.person_add, size: 50, color: Colors.white,),
-                          onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => AddUserPage()));
-                          },
+                        child: Row(
+                          children: <Widget>[
+                            ButtonTheme(
+                              minWidth: 30,
+                              child: FlatButton(
+                                child: Icon(
+                                  Icons.person_add,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddUserPage()));
+                                },
+                              ),
+                            ),
+                            ButtonTheme(
+                              minWidth: 30,
+                              child: FlatButton(
+                                child: Icon(
+                                  Icons.exit_to_app,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                        right: 10,
+                        right: 0,
                         top: 30,
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -122,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                   height: 60,
                   child: Tab(
                     icon: Icon(
-                      Icons.calendar_today,
+                      Icons.date_range,
                     ),
                     text: 'Asistencias',
                   ),
@@ -134,7 +161,6 @@ class _HomePageState extends State<HomePage> {
                       Icons.format_list_bulleted,
                     ),
                     text: 'Colaboradores',
-                    
                   ),
                 ),
               ],

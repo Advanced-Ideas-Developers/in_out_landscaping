@@ -12,9 +12,14 @@ class InOutLandScaping extends StatelessWidget {
       title: 'In Out Landscaping',
       home: Login(),
       theme: ThemeData(
-          primaryColor: Colors.greenAccent[700],
-          accentColor: Colors.black,
-          dividerColor: Colors.green),
+          primaryColor: Colors.teal[800],
+          accentColor: Colors.teal[300],
+          tabBarTheme: TabBarTheme(
+            labelColor: Colors.black,
+            labelStyle: TextStyle(fontSize: 12),
+            unselectedLabelStyle: TextStyle(fontSize: 11)
+          )
+      ),
     );
   }
 }
@@ -31,11 +36,14 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final txtUsername = TextField(
+        autofocus: false,
         controller: usernameController,
         decoration: InputDecoration(
-            labelText: 'Nombre de Usuario', contentPadding: EdgeInsets.all(8)));
+            labelText: 'Nombre de Usuario', contentPadding: EdgeInsets.all(8)),
+    );
 
     final txtPassword = TextField(
+      autocorrect: false,
       controller: passwordController,
       obscureText: true,
       decoration: InputDecoration(
@@ -81,7 +89,7 @@ class _LoginState extends State<Login> {
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Colors.black, Colors.green],
+                  colors: [Colors.teal[300], Colors.teal[800]],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomLeft),
             ),
@@ -173,6 +181,8 @@ class _LoginState extends State<Login> {
         passwordController.text == '123') {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
+      usernameController.clear();
+      passwordController.clear();
     } else {
       final snackBar = SnackBar(
         content: Row(
