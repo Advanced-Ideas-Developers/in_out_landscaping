@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:in_out_landscaping/AssistancePage.dart';
+import 'package:in_out_landscaping/Collaborator.dart';
+import 'package:in_out_landscaping/CollaboratorsList.dart';
+import 'package:in_out_landscaping/RegisterCollaborator.dart';
+import 'package:in_out_landscaping/CollaboratorsSearch.dart';
 import 'HomePage.dart';
 
 void main() {
-  runApp(InOutLandScaping());
+  runApp(InOutLandScaping()); //Originalmente aqui  estaba InOutLandScaping()
 }
+
 
 class InOutLandScaping extends StatelessWidget {
   @override
@@ -13,7 +19,7 @@ class InOutLandScaping extends StatelessWidget {
       home: Login(),
       theme: ThemeData(
           primaryColor: Colors.teal[800],
-          accentColor: Colors.teal[300],
+          accentColor: Colors.black,
           tabBarTheme: TabBarTheme(
             labelColor: Colors.black,
             labelStyle: TextStyle(fontSize: 12),
