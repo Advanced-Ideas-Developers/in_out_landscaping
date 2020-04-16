@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:in_out_landscaping/AssistancePage.dart';
+import 'package:in_out_landscaping/Collaborator.dart';
+import 'package:in_out_landscaping/CollaboratorsList.dart';
+import 'package:in_out_landscaping/RegisterCollaborator.dart';
+import 'package:in_out_landscaping/CollaboratorsSearch.dart';
 import 'HomePage.dart';
 
 void main() {
-  runApp(InOutLandScaping());
+  runApp(InOutLandScaping()); //Originalmente aqui  estaba InOutLandScaping()
 }
+
 
 class InOutLandScaping extends StatelessWidget {
   @override
@@ -12,7 +18,9 @@ class InOutLandScaping extends StatelessWidget {
       title: 'InOutLandscaping',
       home: Login(),
       theme: ThemeData(
-          primaryColor: Colors.greenAccent[700], accentColor: Colors.black),
+          primaryColor: Colors.greenAccent[700],
+          accentColor: Colors.black,
+          dividerColor: Colors.green),
     );
   }
 }
@@ -150,9 +158,14 @@ class _LoginState extends State<Login> {
                         padding: EdgeInsets.only(
                             left: 10, right: 10, top: 10, bottom: 10),
                         onPressed: () {
-                          if(usernameController != null && usernameController.text == 'abc'
-                          && passwordController != null && passwordController.text == '123'){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                          if (usernameController != null &&
+                              usernameController.text == 'abc' &&
+                              passwordController != null &&
+                              passwordController.text == '123') {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomePage()));
                           }
                         },
                         color: Colors.orangeAccent,
