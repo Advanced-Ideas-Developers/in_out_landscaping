@@ -213,9 +213,10 @@ class _AssistanceViewState extends State<AssistanceView> {
                                     ),
                                   ),
                                 ),
-                                DataCell(Text('Hamilton')),
+                                DataCell(Text('Hamilton García')),
                                 DataCell(
                                   FlatButton(
+                                    color: Colors.greenAccent[700],
                                     child: Text(
                                       '$_time',
                                       style: TextStyle(
@@ -245,6 +246,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                         fontSize: 14,
                                       ),
                                     ),
+                                    color: Colors.redAccent[700],
                                     onPressed: () {
                                       DatePicker.showDatePicker(context,
                                           showTitleActions: true,
