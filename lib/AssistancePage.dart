@@ -1,8 +1,7 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
+/* 
 class AssistancePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,7 +14,7 @@ class AssistancePage extends StatelessWidget {
       ),
     );
   }
-}
+} */
 
 class AssistanceView extends StatefulWidget {
   @override

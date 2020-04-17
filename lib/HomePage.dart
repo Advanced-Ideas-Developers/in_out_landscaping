@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'AddUserPage.dart';
+import 'AssistancePage.dart';
+import 'CollaboratorsList.dart';
+import 'CollaboratorsSearch.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,6 +32,15 @@ class _HomePageState extends State<HomePage> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: <Widget>[
+                      Positioned(
+                        child: Opacity(
+                          child: Image.asset('assets/images/logo1.jpg'),
+                          opacity: 0.10,
+                        ),
+                        top: 70,
+                        right: 0,
+                        left: 0,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -102,30 +114,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              ListView(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.black, Colors.green]),
-                    ),
-                  ),
-                ],
+              Center(
+                child: AssistanceView(),
               ),
-              ListView(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Colors.black, Colors.green]),
-                    ),
-                  ),
-                ],
-              ),
+              Center(
+                child: CollaboratorSearchView(),
+              )
             ],
           ),
           bottomNavigationBar: BottomAppBar(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:email_validator/email_validator.dart';
+//import 'package:email_validator/email_validator.dart';
 
-class CollaboratorsSearch extends StatelessWidget {
+/* class CollaboratorsSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +13,7 @@ class CollaboratorsSearch extends StatelessWidget {
       ),
     );
   }
-}
+} */
 
 class CollaboratorSearchView extends StatefulWidget {
   @override
@@ -53,7 +53,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 ),
                 Container(
                   child: Text(
-                    'Listado de Colaborado',
+                    'Listado de Colaboradores',
                     style: TextStyle(
                       color: Colors.white,
                       //fontWeight: FontWeight.bold,
@@ -68,7 +68,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
           //Fin del Header
           //Inicio Busqueda
           Container(
-            margin: EdgeInsets.fromLTRB(35, 70, 35, 50),
+            margin: EdgeInsets.fromLTRB(15, 30, 15, 30),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[

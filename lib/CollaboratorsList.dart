@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:email_validator/email_validator.dart';
 
-class CollaboratorsList extends StatefulWidget {
+/* class CollaboratorsList extends StatefulWidget {
   @override
   _CollaboratorsListState createState() => _CollaboratorsListState();
 }
@@ -19,7 +19,7 @@ class _CollaboratorsListState extends State<CollaboratorsList> {
       ),
     );
   }
-}
+} */
 
 class CollaboratorsListView extends StatefulWidget {
   @override

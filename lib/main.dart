@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:in_out_landscaping/AssistancePage.dart';
+import 'package:flutter/services.dart';
+/* import 'package:in_out_landscaping/AssistancePage.dart';
 import 'package:in_out_landscaping/Collaborator.dart';
 import 'package:in_out_landscaping/CollaboratorsList.dart';
 import 'package:in_out_landscaping/RegisterCollaborator.dart';
-import 'package:in_out_landscaping/CollaboratorsSearch.dart';
+import 'package:in_out_landscaping/CollaboratorsSearch.dart'; */
 import 'HomePage.dart';
 
 void main() {
@@ -14,10 +15,14 @@ void main() {
 class InOutLandScaping extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.black
+    ));
     return MaterialApp(
       title: 'In Out Landscaping',
       home: Login(),
       theme: ThemeData(
+        brightness: Brightness.light,
           primaryColor: Colors.teal[800],
           accentColor: Colors.black,
           tabBarTheme: TabBarTheme(
@@ -95,7 +100,7 @@ class _LoginState extends State<Login> {
             ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Colors.teal[300], Colors.teal[800]],
+                  colors: [Colors.black, Colors.teal[800]],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomLeft),
             ),
