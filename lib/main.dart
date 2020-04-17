@@ -29,7 +29,8 @@ class InOutLandScaping extends StatelessWidget {
             labelColor: Colors.black,
             labelStyle: TextStyle(fontSize: 12),
             unselectedLabelStyle: TextStyle(fontSize: 11)
-          )
+          ),
+          fontFamily: 'Montserrat'
       ),
     );
   }
@@ -83,7 +84,9 @@ class _LoginState extends State<Login> {
                     style: TextStyle(
                         fontSize: 30,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.bold,
+                      
+                    ),
                   ),
                   margin: EdgeInsets.only(left: 15, bottom: 20),
                 ),

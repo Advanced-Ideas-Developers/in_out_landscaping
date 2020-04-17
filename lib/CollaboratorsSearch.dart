@@ -51,16 +51,38 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   ),
                   margin: EdgeInsets.only(left: 10),
                 ),
-                Container(
-                  child: Text(
-                    'Listado de Colaboradores',
-                    style: TextStyle(
-                      color: Colors.white,
-                      //fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      child: Text(
+                        'Listado de Colaboradores',
+                        style: TextStyle(
+                          color: Colors.white,
+                          //fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      margin: EdgeInsets.only(left: 18,),
                     ),
-                  ),
-                  margin: EdgeInsets.only(left: 18, bottom: 15),
+                    Container(
+                      
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.transparent
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.add,
+                        ),
+                        color: Colors.white,
+                        //splashColor: Colors.green,
+                        iconSize: 30,
+                        tooltip: 'Añadir Colaborador',
+                        onPressed: (){},
+                      ),
+                      margin: EdgeInsets.only(bottom: 15, right: 15),
+                    )
+                  ],
                 ),
               ],
             ),
@@ -120,7 +142,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
           //Fin de Busqueda
           //Inicio de Table
           Container(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             margin: EdgeInsets.all(8.0),
             padding: EdgeInsets.all(8.0),
             decoration: BoxDecoration(
@@ -134,80 +156,86 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 width: 2,
               ),
             ),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                  columns: <DataColumn>[
-                    DataColumn(
-                      label: Text('Profile'),
-                    ),
-                    DataColumn(
-                      label: Text('Nombre'),
-                    ),
-                    DataColumn(
-                      label: Text('Fecha'),
-                    ),
-                    DataColumn(
-                      label: Text('Hora Entrada'),
-                    ),
-                    DataColumn(
-                      label: Text('Hora Salida'),
-                    ),
-                  ],
-                  rows: [
-                    DataRow(cells: <DataCell>[
-                      DataCell(
-                        Container(
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.green),
-                          child: IconButton(
-                            icon: Icon(Icons.photo),
-                            onPressed: () {},
-                          ),
+            height: 300,
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                      columns: <DataColumn>[
+                        DataColumn(
+                          label: Text('Profile'),
                         ),
-                      ),
-                      DataCell(Text('Hamilton')),
-                      DataCell(
-                        Text('Abril'),
-                      ),
-                      DataCell(Text('8AM')),
-                      DataCell(Text('5PM')),
-                    ]),
-                    DataRow(cells: <DataCell>[
-                      DataCell(
-                        Container(
-                          decoration: BoxDecoration(shape: BoxShape.circle),
-                          child: IconButton(
-                            icon: Icon(Icons.photo),
-                            onPressed: () {},
-                          ),
+                        DataColumn(
+                          label: Text('Nombre'),
                         ),
-                      ),
-                      DataCell(Text('Edwin')),
-                      DataCell(
-                        Text('Mayo'),
-                      ),
-                      DataCell(Text('7AM')),
-                      DataCell(Text('4PM')),
-                    ]),
-                    DataRow(cells: <DataCell>[
-                      DataCell(
-                        Container(
-                          decoration: BoxDecoration(shape: BoxShape.circle),
-                          child: IconButton(
-                            icon: Icon(Icons.photo),
-                            onPressed: () {},
-                          ),
+                        DataColumn(
+                          label: Text('Fecha'),
                         ),
-                      ),
-                      DataCell(Text('Sotelo')),
-                      DataCell(
-                        Text('Junio'),
-                      ),
-                      DataCell(Text('6AM')),
-                      DataCell(Text('3PM')),
-                    ]),
-                  ].toList()),
+                        DataColumn(
+                          label: Text('Hora Entrada'),
+                        ),
+                        DataColumn(
+                          label: Text('Hora Salida'),
+                        ),
+                      ],
+                      rows: [
+                        DataRow(cells: <DataCell>[
+                          DataCell(
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.green),
+                              child: IconButton(
+                                icon: Icon(Icons.photo),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ),
+                          DataCell(Text('Hamilton')),
+                          DataCell(
+                            Text('Abril'),
+                          ),
+                          DataCell(Text('8AM')),
+                          DataCell(Text('5PM')),
+                        ]),
+                        DataRow(cells: <DataCell>[
+                          DataCell(
+                            Container(
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              child: IconButton(
+                                icon: Icon(Icons.photo),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ),
+                          DataCell(Text('Edwin')),
+                          DataCell(
+                            Text('Mayo'),
+                          ),
+                          DataCell(Text('7AM')),
+                          DataCell(Text('4PM')),
+                        ]),
+                        DataRow(cells: <DataCell>[
+                          DataCell(
+                            Container(
+                              decoration: BoxDecoration(shape: BoxShape.circle),
+                              child: IconButton(
+                                icon: Icon(Icons.photo),
+                                onPressed: () {},
+                              ),
+                            ),
+                          ),
+                          DataCell(Text('Sotelo')),
+                          DataCell(
+                            Text('Junio'),
+                          ),
+                          DataCell(Text('6AM')),
+                          DataCell(Text('3PM')),
+                        ]),
+                      ].toList()),
+                ),
+              ],
             ),
           ),
           //Fin de Table
