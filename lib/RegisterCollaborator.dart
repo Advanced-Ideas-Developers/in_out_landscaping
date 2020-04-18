@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
 import 'package:email_validator/email_validator.dart';
-
+/* 
 class RegisterCollaborator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class RegisterCollaborator extends StatelessWidget {
       ),
     );
   }
-}
+} */
 
 class RegisterCollaboratorView extends StatefulWidget {
   @override

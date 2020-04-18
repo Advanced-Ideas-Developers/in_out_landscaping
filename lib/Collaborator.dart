@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 
-class Collaborator extends StatelessWidget {
+/* class Collaborator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,7 +13,7 @@ class Collaborator extends StatelessWidget {
       ),
     );
   }
-}
+} */
 
 class CollaboratorView extends StatefulWidget {
   @override

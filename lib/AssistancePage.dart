@@ -184,9 +184,9 @@ class _AssistanceViewState extends State<AssistanceView> {
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
                             columns: <DataColumn>[
-                              DataColumn(
+                              /* DataColumn(
                                 label: Text('Profile'),
-                              ),
+                              ), */
                               DataColumn(
                                 label: Text('Nombre'),
                               ),
@@ -202,7 +202,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                             ],
                             rows: [
                               DataRow(cells: <DataCell>[
-                                DataCell(
+                                /* DataCell(
                                   Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -212,11 +212,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                                       onPressed: () {},
                                     ),
                                   ),
-                                ),
+                                ), */
                                 DataCell(Text('Hamilton García')),
                                 DataCell(
                                   FlatButton(
                                     color: Colors.greenAccent[700],
+                                    textColor: Colors.white,
                                     child: Text(
                                       '$_time',
                                       style: TextStyle(
@@ -247,6 +248,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                       ),
                                     ),
                                     color: Colors.redAccent[700],
+                                    textColor: Colors.white,
                                     onPressed: () {
                                       DatePicker.showDatePicker(context,
                                           showTitleActions: true,
@@ -296,7 +298,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                 ),
                               ]),
                               DataRow(cells: <DataCell>[
-                                DataCell(
+                                /* DataCell(
                                   Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -306,10 +308,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                                       onPressed: () {},
                                     ),
                                   ),
-                                ),
+                                ), */
                                 DataCell(Text('Wiz')),
                                 DataCell(
                                   FlatButton(
+                                    color: Colors.greenAccent[700],
+                                    textColor: Colors.white,
                                     child: Text(
                                       '$_time',
                                       style: TextStyle(
@@ -333,6 +337,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                                 ),
                                 DataCell(
                                   FlatButton(
+                                    color: Colors.redAccent[700],
+                                    textColor: Colors.white,
                                     child: Text(
                                       '$_timeTwo',
                                       style: TextStyle(
@@ -388,7 +394,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                 ),
                               ]),
                               DataRow(cells: <DataCell>[
-                                DataCell(
+                                /* DataCell(
                                   Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -398,10 +404,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                                       onPressed: () {},
                                     ),
                                   ),
-                                ),
+                                ), */
                                 DataCell(Text('Edwin')),
                                 DataCell(
                                   FlatButton(
+                                    color: Colors.greenAccent[700],
+                                    textColor: Colors.white,
                                     child: Text(
                                       '$_time',
                                       style: TextStyle(
@@ -425,6 +433,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                                 ),
                                 DataCell(
                                   FlatButton(
+                                    color: Colors.redAccent[700],
+                                    textColor: Colors.white,
                                     child: Text(
                                       '$_timeTwo',
                                       style: TextStyle(

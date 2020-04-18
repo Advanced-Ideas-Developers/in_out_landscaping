@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:in_out_landscaping/CollaboratorsList.dart';
+import 'RegisterCollaborator.dart';
+import 'Collaborator.dart';
 //import 'package:email_validator/email_validator.dart';
 
 /* class CollaboratorsSearch extends StatelessWidget {
@@ -78,7 +81,9 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                         //splashColor: Colors.green,
                         iconSize: 30,
                         tooltip: 'Añadir Colaborador',
-                        onPressed: (){},
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterCollaboratorView()));
+                        },
                       ),
                       margin: EdgeInsets.only(bottom: 15, right: 15),
                     )
@@ -165,7 +170,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: DataTable(
                       columns: <DataColumn>[
                         DataColumn(
-                          label: Text('Profile'),
+                          label: Text(''),
                         ),
                         DataColumn(
                           label: Text('Nombre'),
@@ -179,16 +184,21 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                         DataColumn(
                           label: Text('Hora Salida'),
                         ),
+                        DataColumn(
+                          label: Text('Pago')
+                        )
                       ],
                       rows: [
                         DataRow(cells: <DataCell>[
                           DataCell(
                             Container(
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.green),
+                                  shape: BoxShape.circle),
                               child: IconButton(
-                                icon: Icon(Icons.photo),
-                                onPressed: () {},
+                                icon: Icon(Icons.more_vert),
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> CollaboratorView()));
+                                },
                               ),
                             ),
                           ),
@@ -198,13 +208,21 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           ),
                           DataCell(Text('8AM')),
                           DataCell(Text('5PM')),
+                          DataCell(
+                            RaisedButton(
+                              child: Text('Calcular'),
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>CollaboratorsListView()));
+                              },
+                            )
+                          ),
                         ]),
                         DataRow(cells: <DataCell>[
                           DataCell(
                             Container(
                               decoration: BoxDecoration(shape: BoxShape.circle),
                               child: IconButton(
-                                icon: Icon(Icons.photo),
+                                icon: Icon(Icons.more_vert),
                                 onPressed: () {},
                               ),
                             ),
@@ -215,13 +233,19 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           ),
                           DataCell(Text('7AM')),
                           DataCell(Text('4PM')),
+                          DataCell(
+                            RaisedButton(
+                              child: Text('Calcular'),
+                              onPressed: (){},
+                            )
+                          ),
                         ]),
                         DataRow(cells: <DataCell>[
                           DataCell(
                             Container(
                               decoration: BoxDecoration(shape: BoxShape.circle),
                               child: IconButton(
-                                icon: Icon(Icons.photo),
+                                icon: Icon(Icons.more_vert),
                                 onPressed: () {},
                               ),
                             ),
@@ -232,6 +256,12 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           ),
                           DataCell(Text('6AM')),
                           DataCell(Text('3PM')),
+                          DataCell(
+                            RaisedButton(
+                              child: Text('Calcular'),
+                              onPressed: (){},
+                            )
+                          ),
                         ]),
                       ].toList()),
                 ),
