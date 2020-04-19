@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
 //import 'package:email_validator/email_validator.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 //import 'package:in_out_landscaping/Classes/Globals.dart' as globals;
 
 class AddUserPage extends StatefulWidget {
@@ -60,7 +61,7 @@ class _AddUserPageState extends State<AddUserPage> {
                               'Atrás',
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 19,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold),
                             ),
                           )
@@ -266,7 +267,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 child: CircleAvatar(
                   backgroundColor: Colors.transparent,
                   radius: 70,
-                  child: Image.asset('assets/images/add.png'),
+                  child: SvgPicture.asset('assets/images/account.svg'),
                 ),
               ),
             ),

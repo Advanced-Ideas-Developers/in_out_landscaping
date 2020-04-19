@@ -52,6 +52,10 @@ class _LoginState extends State<Login> {
         controller: usernameController,
         decoration: InputDecoration(
             labelText: 'Nombre de Usuario', contentPadding: EdgeInsets.all(8)),
+        textInputAction: TextInputAction.next,
+        onSubmitted: (value){
+          FocusScope.of(context).nextFocus();
+        },
     );
 
     final txtPassword = TextField(

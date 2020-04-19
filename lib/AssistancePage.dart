@@ -61,7 +61,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                     color: Colors.white,
                     size: 65.0,
                   ),
-                  margin: EdgeInsets.only(left: 10),
+                  margin: EdgeInsets.only(left: 0),
                 ),
                 Container(
                   child: Text(
@@ -69,10 +69,10 @@ class _AssistanceViewState extends State<AssistanceView> {
                     style: TextStyle(
                       color: Colors.white,
                       //fontWeight: FontWeight.bold,
-                      fontSize: 25,
+                      fontSize: 18,
                     ),
                   ),
-                  margin: EdgeInsets.only(left: 18, bottom: 15),
+                  margin: EdgeInsets.only(top: 20,left: 18, bottom: 15),
                 ),
               ],
             ),

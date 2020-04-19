@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
 import 'package:email_validator/email_validator.dart';
 /* 
@@ -68,14 +69,14 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
           //Inicio de la primera parte de la pantalla (Foto y dropdown options)
           Column(children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: 10, bottom: 5),
-              width: 90,
-              height: 90,
-              decoration: BoxDecoration(
-                /* image: DecorationImage(
+              margin: EdgeInsets.only(top: 10, bottom: 0),
+              //width: 90,
+              //height: 90,
+              /* decoration: BoxDecoration(
+                image: DecorationImage(
                   //image: AssetImage(""),
                   fit: BoxFit.cover,
-                ), */
+                ),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
@@ -84,6 +85,14 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                 border: Border.all(
                   color: Colors.black,
                   width: 3,
+                ),
+              ), */
+              child: Hero(
+                tag: 'worker',
+                child: CircleAvatar(
+                  child: SvgPicture.asset("assets/images/team.svg"),
+                  radius: 80,
+                  backgroundColor: Colors.transparent,
                 ),
               ),
             ),
@@ -95,14 +104,14 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
               child: OutlineDropdownButton(
                 inputDecoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                   ),
                   contentPadding: EdgeInsets.only(left: 20),
                 ),
                 items: [
                   DropdownMenuItem(
                     value: 'tree',
-                    child: Text('Poda de Arboles'),
+                    child: Text('Poda de Árboles'),
                   ),
                   DropdownMenuItem(
                     value: 'irrigation',
@@ -110,7 +119,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                   ),
                   DropdownMenuItem(
                     value: 'cleaning',
-                    child: Text('Limpieza a Presion'),
+                    child: Text('Limpieza a Presión'),
                   ),
                   DropdownMenuItem(
                     value: 'pest control',
@@ -124,7 +133,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                 onChanged: (value) {
                   print(value);
                 },
-                hint: Text('Seleccionar Categoria'),
+                hint: Text('Seleccionar Categoría'),
                 iconSize: 40,
               ),
             ),
@@ -178,13 +187,13 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'E-mail',
                         contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                         ),
                         errorText:
-                            !_valid ? 'Formato de Email Incorrecto' : null),
+                            !_valid ? 'Formato de E-mail Incorrecto' : null),
                     textInputAction: TextInputAction.next,
                     onSubmitted: (v) {
                       FocusScope.of(context).nextFocus();
@@ -206,7 +215,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     controller: phoneController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Telefono',
+                      labelText: 'Teléfono',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -300,69 +309,86 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
           // Fin de la Tercera Parte de la Pantalla (checkbox y PopupButton)
           //Inicio de la Cuarta Parte  de la Pantalla (Boton Registrar)
           Container(
-            margin: EdgeInsets.fromLTRB(40, 0, 40, 15),
-            height: 40,
+            //width: 30,
+            alignment: Alignment.center,
+            margin: EdgeInsets.fromLTRB(40, 15, 40, 25),
+            //height: 40,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15),
-                    bottomRight: Radius.circular(15)),
-                boxShadow: <BoxShadow>[
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15)),
+              /*  boxShadow: <BoxShadow>[
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 15.0,
                   ),
-                ]),
-            child: RaisedButton(
-              color: Colors.orange,
-              child: Text(
-                'Registrar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Georgia',
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => SimpleDialog(
-                    title: Text(
-                      '¡El  Usuario se ha registrado exitosamente!',
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
+                ] */
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlatButton(
+                  //color: Colors.orange,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.center,
-                        child: Text('Usuario: Shewin'),
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 40,
                       ),
-                      SizedBox(height: 5),
-                      Container(
-                        alignment: Alignment.center,
-                        child: Text('Contraseña: Purrungudo01'),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.check_circle,
-                            size: 40,
-                            color: Colors.green,
-                          ),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
+                      Text(
+                        'Registrar',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          //fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
                   ),
-                );
-              },
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => SimpleDialog(
+                        title: Text(
+                          '¡El  Usuario se ha registrado éxitosamente!',
+                          /* style: TextStyle(
+                        fontSize: 12,
+                      ), */
+                        ),
+                        children: <Widget>[
+                          SizedBox(height: 5),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text('Usuario: Shewin'),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text('Contraseña: Purrungudo01'),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.check_circle,
+                                size: 40,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],

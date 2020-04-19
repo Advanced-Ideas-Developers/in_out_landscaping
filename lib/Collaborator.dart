@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:groovin_widgets/groovin_widgets.dart';
 
 /* class Collaborator extends StatelessWidget {
   @override
@@ -46,7 +47,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
               margin: EdgeInsets.only(left: 30, bottom: 15),
               alignment: Alignment.bottomLeft,
               child: Text(
-                '@NombredeColaborador',
+                'Editar Colaborador',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -56,7 +57,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
           ),
           //Fin del Header
           //Inicio Check
-          Container(
+          /* Container(
             alignment: Alignment.centerRight,
             child: IconButton(
                 icon: Icon(
@@ -64,7 +65,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
               size: 30,
               color: Colors.teal,
             )),
-          ),
+          ), */
           //Fin Check
           //Inicio TextFields
           Container(
@@ -75,7 +76,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                   child: TextField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      labelText: 'Nombre',
+                      labelText: 'Nombres',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -94,7 +95,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                   child: TextField(
                     controller: lasNameController,
                     decoration: InputDecoration(
-                      labelText: 'Apellido',
+                      labelText: 'Apellidos',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -113,13 +114,13 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                   child: TextField(
                     controller: emailController,
                     decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'E-mail',
                         contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                         ),
                         errorText:
-                            !_valid ? 'Formato de Email Incorrecto' : null),
+                            !_valid ? 'Formato de E-mail Incorrecto' : null),
                     textInputAction: TextInputAction.next,
                     onSubmitted: (v) {
                       FocusScope.of(context).nextFocus();
@@ -142,7 +143,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                     controller: phoneController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Telefono',
+                      labelText: 'Teléfono',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -152,6 +153,22 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                     onSubmitted: (v) {
                       FocusScope.of(context).nextFocus();
                     },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                (34==35?Text('34'):SizedBox()),
+                Container(
+                  child: OutlineDropdownButton(
+                    inputDecoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 25),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(50))
+                      ),
+                    ),
+                    items: [],
+                    hint: Text('Categoría'),
                   ),
                 ),
               ],

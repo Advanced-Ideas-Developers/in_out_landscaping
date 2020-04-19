@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  Navigator.pop(context);
                                 },
                               ),
                             ),
