@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:in_out_landscaping/CollaboratorsList.dart';
 import 'RegisterCollaborator.dart';
 import 'Collaborator.dart';
 import 'package:email_validator/email_validator.dart';
@@ -25,10 +24,13 @@ class CollaboratorSearchView extends StatefulWidget {
 }
 
 class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
+  //Variables para los rangos de fechas
   String _date = "Inicio";
   String _date2 = "Final";
   bool _valid = true;
+
   // Textfields Controller
+  final searchController = TextEditingController();
   final nameController = TextEditingController();
   final lasNameController = TextEditingController();
   final emailController = TextEditingController();
@@ -38,9 +40,8 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   final hoursController = TextEditingController();
   final payTotalController = TextEditingController();
 
-  final searchController = TextEditingController();
+  //Colores para el Header
   List<Color> _headerColor = [Colors.black, Colors.teal[800]];
-  List<Color> _headerColores = [Colors.black, Colors.teal[800]];
 
   @override
   Widget build(BuildContext context) {
@@ -336,8 +337,9 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: nameController,
+                    enabled: false,
                     decoration: InputDecoration(
-                      labelText: 'Nombre',
+                      labelText: 'Nombres',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -351,8 +353,9 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: lasNameController,
+                    enabled: false,
                     decoration: InputDecoration(
-                      labelText: 'Apellido',
+                      labelText: 'Apellidos',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -366,6 +369,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: emailController,
+                    enabled: false,
                     decoration: InputDecoration(
                         labelText: 'Email',
                         contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -394,9 +398,10 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: phoneController,
+                    enabled: false,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: 'Telefono',
+                      labelText: 'Teléfono',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -410,6 +415,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: payHoursController,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Pago por Hora',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -425,6 +431,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: daysController,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Total de dias Trabajados',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -440,6 +447,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: hoursController,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Total de Horas Trabajadas',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -455,6 +463,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: payTotalController,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Total de Pago por Horas',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),

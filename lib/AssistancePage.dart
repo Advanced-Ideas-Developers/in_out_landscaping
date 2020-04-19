@@ -28,7 +28,7 @@ class _AssistanceViewState extends State<AssistanceView> {
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
     List<Color> _coloresHeader = [Colors.black, Colors.teal[800]];
-    String _dropdownValue = '-'; //Variable a utilizar en el dropdown
+    //String _dropdownValue = '-'; //Variable a utilizar en el dropdown
     // Inico de construccion de TextFields
     final txtBusqueda = TextField(
       controller: searchController,
