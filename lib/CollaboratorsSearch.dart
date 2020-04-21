@@ -17,6 +17,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   String _date = "Inicio";
   String _date2 = "Final";
   bool _valid = true;
+  String filtro = 'Nombre';
 
   // Textfields Controller
   final searchController = TextEditingController();
@@ -34,12 +35,14 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
 
   //Lista de Trabajadores
   List employees;
+  //Lista de Categorías
 
   @override
   void initState() {
-    API.getEmployees().then((response){
+    API.getEmployees().then((response) {
       setState(() {
         employees = response;
+        print(employees);
       });
     });
     super.initState();
@@ -138,7 +141,15 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: IconButton(
                     icon: Icon(Icons.search),
-                    onPressed: () {},
+                    onPressed: () async {
+                      API
+                          .getEmployeesbyName(searchController.text)
+                          .then((response) {
+                        setState(() {
+                          employees = response;
+                        });
+                      });
+                    },
                   ),
                 ),
                 Container(
@@ -148,18 +159,23 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: PopupMenuButton(
                     itemBuilder: (context) => [
                       PopupMenuItem(
-                        value: 'nombre',
+                        value: 'Nombre',
                         child: Text('Nombre'),
                       ),
                       PopupMenuItem(
-                        value: 'categoria',
-                        child: Text('Categoria'),
+                        value: 'Categoría',
+                        child: Text('Categoría'),
                       ),
                     ],
                     icon: Icon(
                       Icons.more_vert,
                       size: 20,
                     ),
+                    onSelected: (value) {
+                      setState(() {
+                        filtro = value;
+                      });
+                    },
                   ),
                 ),
               ],
@@ -187,88 +203,114 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
               shrinkWrap: true,
               children: <Widget>[
                 SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columnSpacing: 25,
-                    dataRowHeight: 40,
-                    columns: <DataColumn>[
-                      DataColumn(label: Text('')),
-                      DataColumn(
-                        label: Text('Nombres'),
-                      ),
-                      DataColumn(
-                        label: Text('Apellidos'),
-                      ),
-                      DataColumn(
-                        label: Text('E-mail'),
-                      ),
-                      DataColumn(
-                        label: Text('Categoría'),
-                      ),
-                      //DataColumn(label: Text('Pago'))
-                    ],
-                    rows: employees
-                        .map(((employee) => DataRow(cells: [
-                              DataCell(IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              CollaboratorView()));
-                                },
-                              )),
-                              DataCell(Text(employee['names']), onTap: () {
-                                
+                    scrollDirection: Axis.horizontal,
+                    child: () {
+                      if (employees == null) {
+                        return Center(
+                          widthFactor: 10,
+                          heightFactor: 8,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(Colors.teal[800]),
+                          ),
+                        );
+                      } else {
+                        return DataTable(
+                          columnSpacing: 25,
+                          dataRowHeight: 40,
+                          columns: <DataColumn>[
+                            DataColumn(label: Text('')),
+                            DataColumn(
+                              label: Text('Nombres'),
+                            ),
+                            DataColumn(
+                              label: Text('Apellidos'),
+                            ),
+                            DataColumn(
+                              label: Text('E-mail'),
+                            ),
+                            DataColumn(
+                              label: Text('Categoría'),
+                            ),
+                            //DataColumn(label: Text('Pago'))
+                          ],
+                          rows: employees
+                              .map(((employee) => DataRow(cells: [
+                                    DataCell(IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CollaboratorView()));
+                                      },
+                                    )),
+                                    DataCell(Text(employee['names']),
+                                        onTap: () {
+                                      scrollController.animateTo(560,
+                                          duration: Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn);
 
-                                scrollController.animateTo(560,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn);
+                                      //Ahora rellenamos los Textfields
+                                      nameController.text = employee['names'];
+                                      lastNameController.text =
+                                          employee['last_names'];
+                                      emailController.text = employee['email'];
+                                      phoneController.text = employee['phone'];
+                                      payHoursController.text =
+                                          employee['pay_per_hour'].toString();
+                                    }),
+                                    DataCell(Text(employee['last_names']),
+                                        onTap: () {
+                                      scrollController.animateTo(560,
+                                          duration: Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn);
 
-                                //Ahora rellenamos los Textfields
-                                nameController.text = employee['Nombres'];
-                                lastNameController.text = employee['Apellidos'];
-                                emailController.text = employee['E-mail'];
+                                      //Ahora rellenamos los Textfields
+                                      nameController.text = employee['names'];
+                                      lastNameController.text =
+                                          employee['last_names'];
+                                      emailController.text = employee['email'];
+                                      phoneController.text = employee['phone'];
+                                      payHoursController.text =
+                                          employee['pay_per_hour'].toString();
+                                    }),
+                                    DataCell(Text(employee['email']),
+                                        onTap: () {
+                                      scrollController.animateTo(560,
+                                          duration: Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn);
 
-                              }),
-                              DataCell(Text(employee['last_names']), onTap: () {
+                                      //Ahora rellenamos los Textfields
+                                      nameController.text = employee['names'];
+                                      lastNameController.text =
+                                          employee['last_names'];
+                                      emailController.text = employee['email'];
+                                      phoneController.text = employee['phone'];
+                                      payHoursController.text =
+                                          employee['pay_per_hour'].toString();
+                                    }),
+                                    DataCell(
+                                        Text(employee['category']
+                                            ['category_name']), onTap: () {
+                                      scrollController.animateTo(560,
+                                          duration: Duration(seconds: 1),
+                                          curve: Curves.fastOutSlowIn);
 
-                                scrollController.animateTo(560,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn);
-
-                                //Ahora rellenamos los Textfields
-                                nameController.text = employee['Nombres'];
-                                lastNameController.text = employee['Apellidos'];
-                                emailController.text = employee['E-mail'];
-                              }),
-                              DataCell(Text(employee['email']), onTap: () {
-
-                                scrollController.animateTo(560,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn);
-
-                                //Ahora rellenamos los Textfields
-                                nameController.text = employee['Nombres'];
-                                lastNameController.text = employee['Apellidos'];
-                                emailController.text = employee['E-mail'];
-                              }),
-                              DataCell(Text(employee['categories_id'].toString()), onTap: () {
-
-                                scrollController.animateTo(560,
-                                    duration: Duration(seconds: 1),
-                                    curve: Curves.fastOutSlowIn);
-
-                                //Ahora rellenamos los Textfields
-                                nameController.text = employee['Nombres'];
-                                lastNameController.text = employee['Apellidos'];
-                                emailController.text = employee['E-mail'];
-                              }),
-                            ])))
-                        .toList(),
-                  ),
-                ),
+                                      //Ahora rellenamos los Textfields
+                                      nameController.text = employee['names'];
+                                      lastNameController.text =
+                                          employee['last_names'];
+                                      emailController.text = employee['email'];
+                                      phoneController.text = employee['phone'];
+                                      payHoursController.text =
+                                          employee['pay_per_hour'].toString();
+                                    }),
+                                  ])))
+                              .toList(),
+                        );
+                      }
+                    }()),
               ],
             ),
           ),

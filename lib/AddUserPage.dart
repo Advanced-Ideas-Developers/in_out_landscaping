@@ -14,7 +14,7 @@ class _AddUserPageState extends State<AddUserPage> {
   //Variable para manejar el scroll de la página
   final scrollController = ScrollController();
 
-  //bool _valid = true;
+  bool isEditing = false;
   String selectedEmployee;
   String selectedUserType;
   var selectedUser;
@@ -28,7 +28,7 @@ class _AddUserPageState extends State<AddUserPage> {
 
   @override
   void initState() {
-    API.getUsers().then((response){
+    API.getUsers().then((response) {
       setState(() {
         users = response;
       });
@@ -185,126 +185,119 @@ class _AddUserPageState extends State<AddUserPage> {
                 shrinkWrap: true,
                 children: <Widget>[
                   SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                        columns: [
-                          DataColumn(
-                              label: Text(
-                            'Usuario',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'Contraseña',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'Tipo de Usuario',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
-                        ],
-                        rows: users
-                            .map(((element) => DataRow(
-                                  cells: [
-                                    DataCell(Text(element['username']),
-                                        onTap: () {
-                                      selectedUser = element;
+                      scrollDirection: Axis.horizontal,
+                      child: () {
+                        if (users == null) {
+                          return Center(
+                            heightFactor: 7,
+                            widthFactor: 10,
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation(Colors.teal[800]),
+                            ),
+                          );
+                        }
+                        {
+                          return DataTable(
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                  'Usuario',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'Contraseña',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'Tipo de Usuario',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                              ],
+                              rows: users
+                                  .map(((element) => DataRow(
+                                        cells: [
+                                          DataCell(Text(element['username']),
+                                              onTap: () {
+                                            selectedUser = element;
 
-                                      usernameController.text =
-                                          element['username'];
-                                      passwordController.text =
-                                          element['password'];
+                                            usernameController.text =
+                                                element['username'];
+                                            passwordController.text =
+                                                element['password'];
 
-                                      setState(() {
-                                        if(element['role']=='0'){
-                                          selectedUserType = 'admin';
-                                        }else if(element['role']=='1'){
-                                          selectedUserType = 'contador';
-                                        }else{
-                                          selectedUserType = 'digitador';
-                                        }
-                                      });
-                                      scrollController.jumpTo(430);
-                                    }),
-                                    DataCell(Text(element['password']),
-                                        onTap: () {
-                                      selectedUser = element;
+                                            setState(() {
+                                              if (element['role'] == '0') {
+                                                selectedUserType = 'admin';
+                                              } else if (element['role'] ==
+                                                  '1') {
+                                                selectedUserType = 'contador';
+                                              } else {
+                                                selectedUserType = 'digitador';
+                                              }
+                                            });
+                                            scrollController.jumpTo(430);
+                                          }),
+                                          DataCell(Text(element['password']),
+                                              onTap: () {
+                                            selectedUser = element;
 
-                                      usernameController.text =
-                                          element['username'];
-                                      passwordController.text =
-                                          element['password'];
-                                      setState(() {
-                                        if(element['role']=='0'){
-                                          selectedUserType = 'admin';
-                                        }else if(element['role']=='1'){
-                                          selectedUserType = 'contador';
-                                        }else{
-                                          selectedUserType = 'digitador';
-                                        }
-                                      });
-                                      scrollController.jumpTo(430);
-                                    }),
-                                    DataCell(Text((){
-                                      if(element['role'] == "0"){
-                                        return 'Administrador';
-                                      }else if(element['role']== "1"){
-                                        return 'Contador';
-                                      }else{
-                                        return 'Digitador';
-                                      }
-                                    }()),
-                                    
-                                    onTap: () {
-                                      selectedUser = element;
+                                            usernameController.text =
+                                                element['username'];
+                                            passwordController.text =
+                                                element['password'];
+                                            setState(() {
+                                              if (element['role'] == '0') {
+                                                selectedUserType = 'admin';
+                                              } else if (element['role'] ==
+                                                  '1') {
+                                                selectedUserType = 'contador';
+                                              } else {
+                                                selectedUserType = 'digitador';
+                                              }
+                                            });
+                                            scrollController.jumpTo(430);
+                                          }),
+                                          DataCell(Text(() {
+                                            if (element['role'] == "0") {
+                                              return 'Administrador';
+                                            } else if (element['role'] == "1") {
+                                              return 'Contador';
+                                            } else {
+                                              return 'Digitador';
+                                            }
+                                          }()), onTap: () {
+                                            selectedUser = element;
 
-                                      usernameController.text =
-                                          element['username'];
-                                      passwordController.text =
-                                          element['password'];
-                                      setState(() {
-                                        if(element['role']=='0'){
-                                          selectedUserType = 'admin';
-                                        }else if(element['role']=='1'){
-                                          selectedUserType = 'contador';
-                                        }else{
-                                          selectedUserType = 'digitador';
-                                        }
-                                      });
-                                      scrollController.jumpTo(430);
-                                    }),
-                                  ],
-                                )))
-                            .toList()
-                        /* [
-                        DataRow(cells: [
-                          DataCell(Text('hamiltong98')),
-                          DataCell(Text('1234567')),
-                          DataCell(Text('admin')),
-                        ],
-                        ),
-                        DataRow(cells: [
-                          DataCell(Text('marlons67')),
-                          DataCell(Text('abcdef')),
-                          DataCell(Text('admin')),
-                        ]),
-                        DataRow(cells: [
-                          DataCell(Text('edwinv78')),
-                          DataCell(Text('sape.com')),
-                          DataCell(Text('digitador')),
-                        ]),
-                        DataRow(cells: [
-                          DataCell(Text('franciscos87')),
-                          DataCell(Text('xyfsa.98')),
-                          DataCell(Text('contador')),
-                        ]),
-                      ], */
-                        ),
-                  ),
+                                            usernameController.text =
+                                                element['username'];
+                                            passwordController.text =
+                                                element['password'];
+                                            setState(() {
+                                              if (element['role'] == '0') {
+                                                selectedUserType = 'admin';
+                                              } else if (element['role'] ==
+                                                  '1') {
+                                                selectedUserType = 'contador';
+                                              } else {
+                                                selectedUserType = 'digitador';
+                                              }
+                                            });
+                                            scrollController.jumpTo(430);
+                                          }),
+                                        ],
+                                      )))
+                                  .toList());
+                        }
+                      }()),
                 ],
               ),
             ),
@@ -481,7 +474,10 @@ class _AddUserPageState extends State<AddUserPage> {
                                     Text('Aceptar')
                                   ],
                                 ),
-                                onPressed: () => _successDialog()),
+                                onPressed: () {
+                                  
+                                  _successDialog();
+                                }),
                             FlatButton(
                                 child: Row(
                                   mainAxisAlignment:

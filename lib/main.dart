@@ -193,13 +193,11 @@ class _LoginState extends State<Login> {
     //Variable del Usuario a Entrar
     var user;
 
-    await API.getUsers().then((response) {
-      user = response[2];
-      //print(user.id);
+    await API.getUser(usernameController.text).then((response) {
+      user = response[0];
     });
 
-    if (usernameController != null &&
-        usernameController.text == user['username'] &&
+    if (user != null &&
         passwordController != null &&
         passwordController.text == user['password'] &&
         user['state'] == true) {
