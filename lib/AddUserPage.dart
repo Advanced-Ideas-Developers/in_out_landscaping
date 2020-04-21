@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
+import 'package:http/http.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'HTTP/API.dart';
@@ -19,6 +20,13 @@ class _AddUserPageState extends State<AddUserPage> {
   String selectedUserType;
   var selectedUser;
   List users;
+  List employees;
+
+  //Validaciones
+  bool usernamevalid = true;
+  bool passwordvalid = true;
+  bool rolevalid = true;
+  bool employeevalid = true;
 
   //Controllers Form
   final usernameController = TextEditingController();
@@ -33,6 +41,13 @@ class _AddUserPageState extends State<AddUserPage> {
         users = response;
       });
     });
+
+    API.getEmployees().then((response) {
+      setState(() {
+        employees = response;
+      });
+    });
+
     super.initState();
   }
 
@@ -85,7 +100,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     padding: EdgeInsets.only(left: 30, bottom: 20),
                     child: Text(
-                      'Hola ' + globals.user,
+                      'Hola ' + globals.userLog,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
@@ -255,25 +270,12 @@ class _AddUserPageState extends State<AddUserPage> {
                                             passwordController.text =
                                                 element['password'];
                                             setState(() {
-                                              if (element['role'] == '0') {
-                                                selectedUserType = 'admin';
-                                              } else if (element['role'] ==
-                                                  '1') {
-                                                selectedUserType = 'contador';
-                                              } else {
-                                                selectedUserType = 'digitador';
-                                              }
+                                              selectedUserType = element['role'];
                                             });
                                             scrollController.jumpTo(430);
                                           }),
                                           DataCell(Text(() {
-                                            if (element['role'] == "0") {
-                                              return 'Administrador';
-                                            } else if (element['role'] == "1") {
-                                              return 'Contador';
-                                            } else {
-                                              return 'Digitador';
-                                            }
+                                            selectedUserType = element['role'];
                                           }()), onTap: () {
                                             selectedUser = element;
 
@@ -282,14 +284,7 @@ class _AddUserPageState extends State<AddUserPage> {
                                             passwordController.text =
                                                 element['password'];
                                             setState(() {
-                                              if (element['role'] == '0') {
-                                                selectedUserType = 'admin';
-                                              } else if (element['role'] ==
-                                                  '1') {
-                                                selectedUserType = 'contador';
-                                              } else {
-                                                selectedUserType = 'digitador';
-                                              }
+                                              selectedUserType = element['role'];
                                             });
                                             scrollController.jumpTo(430);
                                           }),
@@ -323,6 +318,9 @@ class _AddUserPageState extends State<AddUserPage> {
                       controller: usernameController,
                       decoration: InputDecoration(
                           labelText: 'Nombre de Usuario',
+                          errorText: usernamevalid
+                              ? null
+                              : '¡Debe rellenar este campo!',
                           contentPadding: EdgeInsets.only(left: 15),
                           border: OutlineInputBorder(
                               borderRadius:
@@ -341,6 +339,9 @@ class _AddUserPageState extends State<AddUserPage> {
                       controller: passwordController,
                       decoration: InputDecoration(
                           labelText: 'Contraseña',
+                          errorText: passwordvalid
+                              ? null
+                              : '¡Debe rellenar este campo!',
                           contentPadding: EdgeInsets.only(left: 15),
                           border: OutlineInputBorder(
                               borderRadius:
@@ -399,15 +400,15 @@ class _AddUserPageState extends State<AddUserPage> {
                           contentPadding: EdgeInsets.only(left: 15)),
                       items: [
                         DropdownMenuItem(
-                          value: 'digitador',
+                          value: '2',
                           child: Text('Digitador'),
                         ),
                         DropdownMenuItem(
-                          value: 'admin',
+                          value: '0',
                           child: Text('Administrador'),
                         ),
                         DropdownMenuItem(
-                          value: 'contador',
+                          value: '1',
                           child: Text('Contador'),
                         ),
                       ],
@@ -420,40 +421,65 @@ class _AddUserPageState extends State<AddUserPage> {
                       iconSize: 30,
                     ),
                   ),
+                  () {
+                    if (!rolevalid) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '¡Debe selecciona un Tipo de Usuario!',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
+                    return Container();
+                  }(),
                   Container(
-                    margin: EdgeInsets.all(10),
-                    child: SearchableDropdown.single(
-                      icon: Icon(Icons.more_vert),
-                      hint: 'Seleccionar Empleado',
-                      searchHint: 'Empleados - Selecciona uno:',
-                      value: selectedEmployee,
-                      items: [
-                        DropdownMenuItem(
-                          value: 'AID00001 - Hamilton García',
-                          child: Text('AID00001 - Hamilton García'),
+                      margin: EdgeInsets.all(10),
+                      child: () {
+                        if (employees == null) {
+                          return Container();
+                        } else {
+                          return SearchableDropdown.single(
+                            icon: Icon(Icons.more_vert),
+                            hint: 'Seleccionar Empleado',
+                            searchHint: 'Empleados - Selecciona uno:',
+                            value: selectedEmployee,
+                            items: employees
+                                .map(((employee) => DropdownMenuItem(
+                                      value: employee['id'].toString() +
+                                          ' - ' +
+                                          employee['names'] +
+                                          ' ' +
+                                          employee['last_names'],
+                                      child: Text(employee['names'] +
+                                          ' ' +
+                                          employee['last_names']),
+                                    )))
+                                .toList(),
+                            underline: Container(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedEmployee = value;
+                              });
+                            },
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          );
+                        }
+                      }()),
+                  () {
+                    if (!employeevalid) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '¡Debe selecciona un Tipo de Usuario!',
+                          style: TextStyle(color: Colors.red),
                         ),
-                        DropdownMenuItem(
-                          value: 'AID00002 - Edwin Vega',
-                          child: Text('AID00002 - Edwin Vega'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'AID00003 - Marlon Sánchez',
-                          child: Text('AID00003 - Marlon Sánchez'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'AID00004 - Francisco Sotelo',
-                          child: Text('AID00004 - Francisco Sotelo'),
-                        ),
-                      ],
-                      underline: Container(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedEmployee = value;
-                        });
-                      },
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ),
+                      );
+                    }
+                    return Container();
+                  }(),
                   Container(
                     margin: EdgeInsets.only(top: 10, bottom: 40),
                     child: Column(
@@ -474,9 +500,78 @@ class _AddUserPageState extends State<AddUserPage> {
                                     Text('Aceptar')
                                   ],
                                 ),
-                                onPressed: () {
-                                  
-                                  _successDialog();
+                                onPressed: () async {
+                                  var user = {};
+
+                                  if (usernameController.text.length == 0) {
+                                    setState(() {
+                                      usernamevalid = false;
+                                    });
+                                    return;
+                                  } else {
+                                    setState(() {
+                                      usernamevalid = true;
+                                    });
+                                    user['username'] = usernameController.text;
+                                  }
+
+                                  if (passwordController.text.length == 0) {
+                                    setState(() {
+                                      passwordvalid = false;
+                                      return;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      passwordvalid = true;
+                                    });
+                                    user['password'] = passwordController.text;
+                                  }
+
+                                  if (selectedUserType == null) {
+                                    setState(() {
+                                      rolevalid = false;
+                                      return;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      rolevalid = true;
+                                    });
+                                    user['role'] = selectedUserType;
+                                  }
+
+                                  if (selectedEmployee == null) {
+                                    setState(() {
+                                      employeevalid = false;
+                                      return;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      employeevalid = true;
+                                    });
+                                    var employeeId =
+                                        selectedEmployee.split('-');
+                                    user['employees_id'] = employeeId[0].trim();
+                                  }
+
+                                  user["state"] = 'true';
+
+                                  await API.addUser(user).then((response) {
+                                    if (response) {
+                                      _successDialog();
+                                      usernameController.clear();
+                                      passwordController.clear();
+                                      setState(() {
+                                        selectedUserType = null;
+                                        selectedEmployee = null;
+                                      });
+                                    } else {
+                                      print('Error');
+                                    }
+                                  });
+
+                                  await API.getUsers().then((response) {
+                                    users = response;
+                                  });
                                 }),
                             FlatButton(
                                 child: Row(

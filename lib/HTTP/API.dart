@@ -55,13 +55,12 @@ class API{
     }
   }
 
-  static Future<List> addUser(Map employee) async{
-    var response = await http.post(url + 'add-employee', body: employee);
-    if (response.statusCode == 201){
-      var jsonResponse =  convert.jsonDecode(response.body);
-      return jsonResponse['respuesta: '];
+  static Future<bool> addUser(Map user) async{
+    var response = await http.post(url + 'add-user', body: convert.jsonEncode(user));
+    if (response.statusCode == 200){
+      return true;
     }else{
-      return null;
+      return false;
     }
 
   }

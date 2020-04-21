@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             margin: EdgeInsets.only(left: 35, top: 15),
                             child: Text(
-                              'Bienvenido ' + globals.user,
+                              'Bienvenido ' + globals.userLog,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 25,

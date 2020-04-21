@@ -202,7 +202,7 @@ class _LoginState extends State<Login> {
         passwordController.text == user['password'] &&
         user['state'] == true) {
       globals.isLoggedIn = true;
-      globals.user = user['username'];
+      globals.userLog = user['username'];
       globals.role = user['role'];
 
       Navigator.push(
