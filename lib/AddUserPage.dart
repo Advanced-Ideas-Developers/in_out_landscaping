@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
-//import 'package:email_validator/email_validator.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-//import 'package:in_out_landscaping/Classes/Globals.dart' as globals;
+import 'HTTP/API.dart';
+import 'Classes/Globals.dart' as globals;
 
 class AddUserPage extends StatefulWidget {
   @override
@@ -11,16 +11,15 @@ class AddUserPage extends StatefulWidget {
 }
 
 class _AddUserPageState extends State<AddUserPage> {
+  //Variable para manejar el scroll de la página
+  final scrollController = ScrollController();
+
   //bool _valid = true;
   String selectedEmployee;
   String selectedUserType;
+  var selectedUser;
+  List users;
 
-  final List users = [
-    {'Usuario': 'hamiltong98', 'Contraseña': '123456', 'Tipo': 'admin'},
-    {'Usuario': 'edwinv78', 'Contraseña': 'sape.com', 'Tipo': 'admin'},
-    {'Usuario': 'marlons54', 'Contraseña': '34276', 'Tipo': 'digitador'},
-    {'Usuario': 'franciscos32', 'Contraseña': 'javascript', 'Tipo': 'contador'},
-  ];
   //Controllers Form
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -28,10 +27,21 @@ class _AddUserPageState extends State<AddUserPage> {
   //final emailController = TextEditingController();
 
   @override
+  void initState() {
+    API.getUsers().then((response){
+      setState(() {
+        users = response;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: ListView(
+          controller: scrollController,
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
@@ -75,7 +85,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     padding: EdgeInsets.only(left: 30, bottom: 20),
                     child: Text(
-                      'Hola @nombreDeUsuario',
+                      'Hola ' + globals.user,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
@@ -200,34 +210,72 @@ class _AddUserPageState extends State<AddUserPage> {
                         rows: users
                             .map(((element) => DataRow(
                                   cells: [
-                                    DataCell(Text(element['Usuario']),
+                                    DataCell(Text(element['username']),
                                         onTap: () {
+                                      selectedUser = element;
+
                                       usernameController.text =
-                                          element['Usuario'];
+                                          element['username'];
                                       passwordController.text =
-                                          element['Contraseña'];
+                                          element['password'];
+
                                       setState(() {
-                                        selectedUserType = element['Tipo'];
+                                        if(element['role']=='0'){
+                                          selectedUserType = 'admin';
+                                        }else if(element['role']=='1'){
+                                          selectedUserType = 'contador';
+                                        }else{
+                                          selectedUserType = 'digitador';
+                                        }
                                       });
+                                      scrollController.jumpTo(430);
                                     }),
-                                    DataCell(Text(element['Contraseña']),
+                                    DataCell(Text(element['password']),
                                         onTap: () {
+                                      selectedUser = element;
+
                                       usernameController.text =
-                                          element['Usuario'];
+                                          element['username'];
                                       passwordController.text =
-                                          element['Contraseña'];
+                                          element['password'];
                                       setState(() {
-                                        selectedUserType = element['Tipo'];
+                                        if(element['role']=='0'){
+                                          selectedUserType = 'admin';
+                                        }else if(element['role']=='1'){
+                                          selectedUserType = 'contador';
+                                        }else{
+                                          selectedUserType = 'digitador';
+                                        }
                                       });
+                                      scrollController.jumpTo(430);
                                     }),
-                                    DataCell(Text(element['Tipo']), onTap: () {
+                                    DataCell(Text((){
+                                      if(element['role'] == "0"){
+                                        return 'Administrador';
+                                      }else if(element['role']== "1"){
+                                        return 'Contador';
+                                      }else{
+                                        return 'Digitador';
+                                      }
+                                    }()),
+                                    
+                                    onTap: () {
+                                      selectedUser = element;
+
                                       usernameController.text =
-                                          element['Usuario'];
+                                          element['username'];
                                       passwordController.text =
-                                          element['Contraseña'];
+                                          element['password'];
                                       setState(() {
-                                        selectedUserType = element['Tipo'];
+                                        if(element['role']=='0'){
+                                          selectedUserType = 'admin';
+                                        }else if(element['role']=='1'){
+                                          selectedUserType = 'contador';
+                                        }else{
+                                          selectedUserType = 'digitador';
+                                        }
                                       });
+                                      scrollController.jumpTo(430);
                                     }),
                                   ],
                                 )))
@@ -278,6 +326,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     margin: EdgeInsets.only(top: 15),
                     child: TextField(
+                      //scrollPadding: EdgeInsets.all(10) ,
                       controller: usernameController,
                       decoration: InputDecoration(
                           labelText: 'Nombre de Usuario',
@@ -295,6 +344,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     margin: EdgeInsets.only(top: 15),
                     child: TextField(
+                      //scrollPadding: EdgeInsets.only(bottom: 1000),
                       controller: passwordController,
                       decoration: InputDecoration(
                           labelText: 'Contraseña',
@@ -302,11 +352,7 @@ class _AddUserPageState extends State<AddUserPage> {
                           border: OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50)))),
-                      textInputAction: TextInputAction.next,
-                      onSubmitted: (v) {
-                        //print(v);
-                        FocusScope.of(context).nextFocus();
-                      },
+                      textInputAction: TextInputAction.done,
                     ),
                   ),
                   /* Container(
@@ -353,7 +399,6 @@ class _AddUserPageState extends State<AddUserPage> {
                     margin: EdgeInsets.only(top: 15, bottom: 15),
                     child: OutlineDropdownButton(
                       value: selectedUserType,
-
                       inputDecoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius:
@@ -374,8 +419,6 @@ class _AddUserPageState extends State<AddUserPage> {
                         ),
                       ],
                       onChanged: (value) {
-                        print(value);
-                        print(selectedEmployee);
                         setState(() {
                           selectedUserType = value;
                         });
@@ -486,7 +529,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

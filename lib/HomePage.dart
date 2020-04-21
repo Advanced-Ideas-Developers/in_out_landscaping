@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'AddUserPage.dart';
 import 'AssistancePage.dart';
-import 'CollaboratorsList.dart';
 import 'CollaboratorsSearch.dart';
+import 'Classes/Globals.dart' as globals;
 
 class HomePage extends StatefulWidget {
   @override
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             margin: EdgeInsets.only(left: 35, top: 15),
                             child: Text(
-                              'Bienvenido @usuario',
+                              'Bienvenido ' + globals.user,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 25,

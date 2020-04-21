@@ -3,20 +3,7 @@ import 'RegisterCollaborator.dart';
 import 'Collaborator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
-/* class CollaboratorsSearch extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Collaborators Search',
-      home: CollaboratorSearchView(),
-      theme: ThemeData(
-        primaryColor: Colors.green[800],
-        accentColor: Colors.black,
-      ),
-    );
-  }
-} */
+import 'HTTP/API.dart';
 
 class CollaboratorSearchView extends StatefulWidget {
   @override
@@ -24,6 +11,8 @@ class CollaboratorSearchView extends StatefulWidget {
 }
 
 class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
+  final scrollController = ScrollController();
+
   //Variables para los rangos de fechas
   String _date = "Inicio";
   String _date2 = "Final";
@@ -32,7 +21,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   // Textfields Controller
   final searchController = TextEditingController();
   final nameController = TextEditingController();
-  final lasNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final payHoursController = TextEditingController();
@@ -43,10 +32,24 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   //Colores para el Header
   List<Color> _headerColor = [Colors.black, Colors.teal[800]];
 
+  //Lista de Trabajadores
+  List employees;
+
+  @override
+  void initState() {
+    API.getEmployees().then((response){
+      setState(() {
+        employees = response;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
+        controller: scrollController,
         children: <Widget>[
           //Inicio Header
           Container(
@@ -186,31 +189,28 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
-                      columns: <DataColumn>[
-                        DataColumn(
-                          label: Text(''),
-                        ),
-                        DataColumn(
-                          label: Text('Nombres'),
-                        ),
-                        DataColumn(
-                          label: Text('Apellidos'),
-                        ),
-                        DataColumn(
-                          label: Text('E-mail'),
-                        ),
-                        DataColumn(
-                          label: Text('Categoría'),
-                        ),
-                        //DataColumn(label: Text('Pago'))
-                      ],
-                      rows: [
-                        DataRow(cells: <DataCell>[
-                          DataCell(
-                            Container(
-                              decoration: BoxDecoration(shape: BoxShape.circle),
-                              child: IconButton(
-                                icon: Icon(Icons.more_vert),
+                    columnSpacing: 25,
+                    dataRowHeight: 40,
+                    columns: <DataColumn>[
+                      DataColumn(label: Text('')),
+                      DataColumn(
+                        label: Text('Nombres'),
+                      ),
+                      DataColumn(
+                        label: Text('Apellidos'),
+                      ),
+                      DataColumn(
+                        label: Text('E-mail'),
+                      ),
+                      DataColumn(
+                        label: Text('Categoría'),
+                      ),
+                      //DataColumn(label: Text('Pago'))
+                    ],
+                    rows: employees
+                        .map(((employee) => DataRow(cells: [
+                              DataCell(IconButton(
+                                icon: Icon(Icons.edit),
                                 onPressed: () {
                                   Navigator.push(
                                       context,
@@ -218,69 +218,56 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                           builder: (context) =>
                                               CollaboratorView()));
                                 },
-                              ),
-                            ),
-                          ),
-                          DataCell(Text('Hamilton Nomar')),
-                          DataCell(
-                            Text('García Ramirez'),
-                          ),
-                          DataCell(Text('hngr98@gmail.com')),
-                          DataCell(Text('Limpieza a Presión')),
-                          /* DataCell(RaisedButton(
-                            child: Text('Calcular'),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          CollaboratorsListView()));
-                            },
-                          )), */
-                        ]),
-                        DataRow(cells: <DataCell>[
-                          DataCell(
-                            Container(
-                              decoration: BoxDecoration(shape: BoxShape.circle),
-                              child: IconButton(
-                                icon: Icon(Icons.more_vert),
-                                onPressed: () {},
-                              ),
-                            ),
-                          ),
-                          DataCell(Text('Edwin Josué')),
-                          DataCell(
-                            Text('Narváez Vega'),
-                          ),
-                          DataCell(Text('sape@gmail.com')),
-                          DataCell(Text('Riego')),
-                          /* DataCell(RaisedButton(
-                            child: Text('Calcular'),
-                            onPressed: () {},
-                          )), */
-                        ]),
-                        DataRow(cells: <DataCell>[
-                          DataCell(
-                            Container(
-                              decoration: BoxDecoration(shape: BoxShape.circle),
-                              child: IconButton(
-                                icon: Icon(Icons.more_vert),
-                                onPressed: () {},
-                              ),
-                            ),
-                          ),
-                          DataCell(Text('Francisco Paúl')),
-                          DataCell(
-                            Text('Sotelo'),
-                          ),
-                          DataCell(Text('ravehunter05@gmail.com')),
-                          DataCell(Text('Mantenimiento')),
-                          /* DataCell(RaisedButton(
-                            child: Text('Calcular'),
-                            onPressed: () {},
-                          )), */
-                        ]),
-                      ].toList()),
+                              )),
+                              DataCell(Text(employee['names']), onTap: () {
+                                
+
+                                scrollController.animateTo(560,
+                                    duration: Duration(seconds: 1),
+                                    curve: Curves.fastOutSlowIn);
+
+                                //Ahora rellenamos los Textfields
+                                nameController.text = employee['Nombres'];
+                                lastNameController.text = employee['Apellidos'];
+                                emailController.text = employee['E-mail'];
+
+                              }),
+                              DataCell(Text(employee['last_names']), onTap: () {
+
+                                scrollController.animateTo(560,
+                                    duration: Duration(seconds: 1),
+                                    curve: Curves.fastOutSlowIn);
+
+                                //Ahora rellenamos los Textfields
+                                nameController.text = employee['Nombres'];
+                                lastNameController.text = employee['Apellidos'];
+                                emailController.text = employee['E-mail'];
+                              }),
+                              DataCell(Text(employee['email']), onTap: () {
+
+                                scrollController.animateTo(560,
+                                    duration: Duration(seconds: 1),
+                                    curve: Curves.fastOutSlowIn);
+
+                                //Ahora rellenamos los Textfields
+                                nameController.text = employee['Nombres'];
+                                lastNameController.text = employee['Apellidos'];
+                                emailController.text = employee['E-mail'];
+                              }),
+                              DataCell(Text(employee['categories_id'].toString()), onTap: () {
+
+                                scrollController.animateTo(560,
+                                    duration: Duration(seconds: 1),
+                                    curve: Curves.fastOutSlowIn);
+
+                                //Ahora rellenamos los Textfields
+                                nameController.text = employee['Nombres'];
+                                lastNameController.text = employee['Apellidos'];
+                                emailController.text = employee['E-mail'];
+                              }),
+                            ])))
+                        .toList(),
+                  ),
                 ),
               ],
             ),
@@ -291,7 +278,10 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(top: 20, left: 20),
-                child: Text('Cálculo de Salario', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                child: Text(
+                  'Cálculo de Salario',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
               )
             ],
           ),
@@ -303,7 +293,11 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 child: Hero(
                   tag: 'Dinero',
                   child: CircleAvatar(
-                    child: Icon(Icons.attach_money, color: Colors.green, size: 80,),
+                    child: Icon(
+                      Icons.attach_money,
+                      color: Colors.green,
+                      size: 80,
+                    ),
                     radius: 60,
                     backgroundColor: Colors.transparent,
                   ),
@@ -337,7 +331,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: nameController,
-                    enabled: false,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Nombres',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -352,8 +346,8 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 ),
                 Container(
                   child: TextField(
-                    controller: lasNameController,
-                    enabled: false,
+                    controller: lastNameController,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Apellidos',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -369,7 +363,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: emailController,
-                    enabled: false,
+                    readOnly: true,
                     decoration: InputDecoration(
                         labelText: 'Email',
                         contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -398,7 +392,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: phoneController,
-                    enabled: false,
+                    readOnly: true,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Teléfono',
@@ -415,7 +409,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: payHoursController,
-                    enabled: false,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Pago por Hora',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -431,7 +425,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: daysController,
-                    enabled: false,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Total de dias Trabajados',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -447,7 +441,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: hoursController,
-                    enabled: false,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Total de Horas Trabajadas',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -463,7 +457,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 Container(
                   child: TextField(
                     controller: payTotalController,
-                    enabled: false,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Total de Pago por Horas',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),

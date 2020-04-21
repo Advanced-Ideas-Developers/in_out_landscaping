@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-/* import 'package:in_out_landscaping/AssistancePage.dart';
-import 'package:in_out_landscaping/Collaborator.dart';
-import 'package:in_out_landscaping/CollaboratorsList.dart';
-import 'package:in_out_landscaping/RegisterCollaborator.dart';
-import 'package:in_out_landscaping/CollaboratorsSearch.dart'; */
 import 'HomePage.dart';
+import 'HTTP/API.dart';
+import 'Classes/Globals.dart' as globals;
 
 void main() {
   runApp(InOutLandScaping()); //Originalmente aqui  estaba InOutLandScaping()
@@ -44,7 +41,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
     final txtUsername = TextField(
@@ -192,11 +189,24 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _login(context) {
+  void _login(context) async {
+    //Variable del Usuario a Entrar
+    var user;
+
+    await API.getUsers().then((response) {
+      user = response[2];
+      //print(user.id);
+    });
+
     if (usernameController != null &&
-        usernameController.text == 'abc' &&
+        usernameController.text == user['username'] &&
         passwordController != null &&
-        passwordController.text == '123') {
+        passwordController.text == user['password'] &&
+        user['state'] == true) {
+      globals.isLoggedIn = true;
+      globals.user = user['username'];
+      globals.role = user['role'];
+
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
       usernameController.clear();
