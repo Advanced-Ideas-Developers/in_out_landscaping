@@ -27,6 +27,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
   final lasNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
+  final pagoController = TextEditingController();
   bool _valid = true;
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
           //Fin Check
           //Inicio TextFields
           Container(
-            margin: EdgeInsets.fromLTRB(40, 17, 40, 15),
+            margin: EdgeInsets.fromLTRB(40, 40, 40, 15),
             child: Column(
               children: <Widget>[
                 Container(
@@ -158,14 +159,33 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                 SizedBox(
                   height: 10,
                 ),
-                (34==35?Text('34'):SizedBox()),
+                Container(
+                  child: TextField(
+                    controller: pagoController,
+                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      labelText: 'Pago por Hora',
+                      contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                      ),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (v) {
+                      FocusScope.of(context).nextFocus();
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                (34 == 35 ? Text('34') : SizedBox()),
                 Container(
                   child: OutlineDropdownButton(
                     inputDecoration: InputDecoration(
                       contentPadding: EdgeInsets.only(left: 25),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(50))
-                      ),
+                          borderRadius: BorderRadius.all(Radius.circular(50))),
                     ),
                     items: [],
                     hint: Text('Categoría'),
@@ -175,7 +195,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
             ),
           ),
           //Fin de los TextFileds
-          Container(
+          /* Container(
             alignment: Alignment.center,
             margin: EdgeInsets.all(8.0),
             padding: EdgeInsets.all(8.0),
@@ -227,6 +247,61 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                       DataCell(Text('3PM')),
                     ]),
                   ].toList()),
+            ),
+          ), */
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.fromLTRB(15, 13, 15, 10),
+            child: Row(
+              children: <Widget>[
+                FlatButton(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 40,
+                      ),
+                      Text(
+                        'Registrar',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          //fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {},
+                ),
+                SizedBox(
+                  width: 5,
+                ),
+                FlatButton(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Icon(
+                      Icons.close,
+                      color: Colors.red,
+                      size: 40,
+                    ),
+                    Text(
+                      'Cancelar',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        //fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                ),
+              ],
             ),
           ),
         ],

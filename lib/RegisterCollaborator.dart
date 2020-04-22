@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
+import 'HTTP/API.dart';
 /* 
 class RegisterCollaborator extends StatelessWidget {
   @override
@@ -26,12 +29,29 @@ class RegisterCollaboratorView extends StatefulWidget {
 class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
   bool _isChecked = false; // Variable a utilizar en el checkbox de la Pantalla
   bool _valid = true;
-
+  List categories;
   final nameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final payHoursController = TextEditingController();
+  //Variales booleanas de los textfield
+  bool employeenamevalid;
+  bool employeelastnamevalid;
+  bool employeemailvalid;
+  bool employeephonevalid;
+  bool employeepayvalid;
+  bool employeecategory;
+  String selectCategory;
+  @override
+  void initState() {
+    API.getCategories().then((response) {
+      setState(() {
+        categories = response;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,30 +128,17 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                   ),
                   contentPadding: EdgeInsets.only(left: 20),
                 ),
-                items: [
-                  DropdownMenuItem(
-                    value: 'tree',
-                    child: Text('Poda de Árboles'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'irrigation',
-                    child: Text('Riego'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'cleaning',
-                    child: Text('Limpieza a Presión'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'pest control',
-                    child: Text('Control de Plagas'),
-                  ),
-                  DropdownMenuItem(
-                    value: 'mantenimiento',
-                    child: Text('Mantenimiento'),
-                  ),
-                ],
+                items: categories
+                    .map(((category) => DropdownMenuItem(
+                          value: category['id'].toString(),
+                          child: Text(category['category_name']),
+                        )))
+                    .toList(),
+                //underline: Container(),
                 onChanged: (value) {
-                  print(value);
+                  setState(() {
+                    selectCategory = value;
+                  });
                 },
                 hint: Text('Seleccionar Categoría'),
                 iconSize: 40,
@@ -232,6 +239,8 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                 ),
                 Container(
                   child: TextField(
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
                     controller: payHoursController,
                     decoration: InputDecoration(
                       labelText: 'Pago por Hora',
@@ -240,6 +249,10 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
                     ),
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (v) {
+                      FocusScope.of(context).nextFocus();
+                    },
                   ),
                 ),
               ],
@@ -247,7 +260,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
           ),
           //Fin de la Segunda Parte de la pantalla (Textfields)
           //Inicio de la Tercera Parte de la Pantalla (checkbox y PopupButton)
-          Container(
+          /* Container(
             margin: EdgeInsets.fromLTRB(40, 5, 40, 15),
             height: 50,
             width: double.infinity,
@@ -275,37 +288,35 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     },
                   ),
                 ),
-                Container(
-                  child: DropdownButton(
-                    items: [
-                      DropdownMenuItem(
-                        value: 'admin',
-                        child: Text('Administrador'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'contador',
-                        child: Text('Contador'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'digitador',
-                        child: Text('Digitador'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'colaborador',
-                        child: Text('Colaborador'),
-                      )
-                    ],
-                    onChanged: (value) {
-                      print(value);
-                    },
-                    icon: Icon(Icons.menu),
-                    iconSize: 25,
-                    hint: Text('Tipo de Usuario  '),
-                  ),
-                ),
+                /* Container(
+                  child: () {
+                    if (categories == null) {
+                      return Container();
+                    } else {
+                      return SearchableDropdown(
+                          icon: Icon(Icons.menu),
+                          iconSize: 25,
+                          hint: 'Tipo de Usuario',
+                          searchHint: 'Usuario - Selecciona uno: ',
+                          value: selectCategory,
+
+                          items: categories.map(((category) => DropdownMenuItem(
+                            value: category['id'].toString(),
+                            child: Text(category['category_name']),
+                          ))).toList(),
+                          underline: Container(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectCategory = value;
+                            });
+                          },
+                      );
+                    }
+                  }(),
+                ), */
               ],
             ),
-          ),
+          ), */
           // Fin de la Tercera Parte de la Pantalla (checkbox y PopupButton)
           //Inicio de la Cuarta Parte  de la Pantalla (Boton Registrar)
           Container(
@@ -349,43 +360,98 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                       ),
                     ],
                   ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => SimpleDialog(
-                        title: Text(
-                          '¡El  Usuario se ha registrado éxitosamente!',
-                          /* style: TextStyle(
-                        fontSize: 12,
-                      ), */
-                        ),
-                        children: <Widget>[
-                          SizedBox(height: 5),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text('Usuario: Shewin'),
-                          ),
-                          SizedBox(height: 5),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text('Contraseña: Purrungudo01'),
-                          ),
-                          SizedBox(height: 5),
-                          Container(
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.check_circle,
-                                size: 40,
-                                color: Colors.green,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
+                  onPressed: () async {
+                    var employee = {};
+                    if (int.parse(selectCategory) == 1) {
+                      setState(() {
+                        employeecategory = true;
+                      });
+                      employee['categories_id'] = int.parse(selectCategory);
+                    } else {
+                      if (int.parse(selectCategory) == 2) {
+                        setState(() {
+                          employeecategory = true;
+                        });
+                        employee['categories_id'] = int.parse(selectCategory);
+                      }
+                    }
+                    if (nameController.text.length == 0) {
+                      setState(() {
+                        employeenamevalid = false;
+                      });
+                      return;
+                    } else {
+                      setState(() {
+                        employeenamevalid = true;
+                      });
+                      employee['names'] = nameController.text;
+                    }
+
+                    if (lastNameController.text.length == 0) {
+                      setState(() {
+                        employeelastnamevalid = false;
+                      });
+                      return;
+                    } else {
+                      setState(() {
+                        employeelastnamevalid = true;
+                      });
+                      employee['last_names'] = lastNameController.text;
+                    }
+
+                    if (emailController.text.length == 0) {
+                      setState(() {
+                        employeemailvalid = false;
+                      });
+                      return;
+                    } else {
+                      setState(() {
+                        employeemailvalid = true;
+                      });
+                      employee['email'] = emailController.text;
+                    }
+
+                    if (phoneController.text.length == 0) {
+                      setState(() {
+                        employeephonevalid = false;
+                      });
+                      return;
+                    } else {
+                      setState(() {
+                        employeephonevalid = true;
+                      });
+                      employee['phone'] = phoneController.text;
+                    }
+
+                    if (payHoursController.text.length == 0) {
+                      setState(() {
+                        employeepayvalid = false;
+                      });
+                      return;
+                    } else {
+                      setState(() {
+                        employeepayvalid = true;
+                      });
+                      employee['pay_per_hour'] =
+                          int.parse(payHoursController.text);
+                    }
+
+                    employee['state'] = true;
+
+                    await API.addEmployee(employee).then((response) {
+                      if (response) {
+                        _showDialogRegister();
+                        nameController.clear();
+                        lastNameController.clear();
+                        emailController.clear();
+                        phoneController.clear();
+                        payHoursController.clear();
+                      } else {
+                        _showDialogErrorRegister();
+                      }
+                    });
+                    //Comienzo Anuncio
+                    //Fin Anuncio
                   },
                 ),
               ],
@@ -394,5 +460,82 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
         ],
       ),
     );
+  }
+
+  void _showDialogRegister() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Èxito!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Colaborador Agregado',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: 35,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void _showDialogErrorRegister() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Error!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Colaborador no Agregado',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    IconButton(
+                        icon: Icon(
+                          Icons.cancel,
+                          color: Colors.red,
+                          size: 35,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        })
+                  ],
+                ),
+              ));
+        });
   }
 }
