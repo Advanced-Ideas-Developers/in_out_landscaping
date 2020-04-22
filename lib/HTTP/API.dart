@@ -35,4 +35,15 @@ class API{
     }
   }
 
+  static Future<bool> addEmployee(Map employee) async {
+    var response = await http.post(url + 'add-employee',headers: {'content-type':'application/json'},
+    body: convert.json.encode(employee));
+    print(response.statusCode);
+    if (response.statusCode == 200){
+      return true;
+    }else {
+      return false;
+    }
+  } 
+
 }
