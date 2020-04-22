@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
-import 'package:http/http.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'HTTP/API.dart';
@@ -18,7 +17,7 @@ class _AddUserPageState extends State<AddUserPage> {
   bool isEditing = false;
   String selectedEmployee;
   String selectedUserType;
-  var selectedUser;
+  int selectedUser;
   List users;
   List employees;
 
@@ -242,7 +241,8 @@ class _AddUserPageState extends State<AddUserPage> {
                                         cells: [
                                           DataCell(Text(element['username']),
                                               onTap: () {
-                                            selectedUser = element;
+                                            isEditing = true;
+                                            selectedUser = element['id'];
 
                                             usernameController.text =
                                                 element['username'];
@@ -250,41 +250,72 @@ class _AddUserPageState extends State<AddUserPage> {
                                                 element['password'];
 
                                             setState(() {
-                                              if (element['role'] == '0') {
-                                                selectedUserType = 'admin';
-                                              } else if (element['role'] ==
-                                                  '1') {
-                                                selectedUserType = 'contador';
-                                              } else {
-                                                selectedUserType = 'digitador';
-                                              }
+                                              selectedUserType =
+                                                  element['role'];
+                                              selectedEmployee =
+                                                  element['employee']['id']
+                                                          .toString() +
+                                                      ' - ' +
+                                                      element['employee']
+                                                          ['names'] +
+                                                      ' ' +
+                                                      element['employee']
+                                                          ['last_names'];
                                             });
                                             scrollController.jumpTo(430);
                                           }),
                                           DataCell(Text(element['password']),
                                               onTap: () {
-                                            selectedUser = element;
+                                            isEditing = true;
+                                            selectedUser = element['id'];
 
                                             usernameController.text =
                                                 element['username'];
                                             passwordController.text =
                                                 element['password'];
                                             setState(() {
-                                              selectedUserType = element['role'];
+                                              selectedUserType =
+                                                  element['role'];
+                                              selectedEmployee =
+                                                  element['employee']['id']
+                                                          .toString() +
+                                                      ' - ' +
+                                                      element['employee']
+                                                          ['names'] +
+                                                      ' ' +
+                                                      element['employee']
+                                                          ['last_names'];
                                             });
                                             scrollController.jumpTo(430);
                                           }),
                                           DataCell(Text(() {
-                                            selectedUserType = element['role'];
+                                            if (element['role'] == "0") {
+                                              return 'Administrador';
+                                            } else if (element['role'] == "1") {
+                                              return 'Contador';
+                                            } else {
+                                              return 'Digitador';
+                                            }
                                           }()), onTap: () {
-                                            selectedUser = element;
+                                            isEditing = true;
+                                            selectedUser = element['id'];
 
                                             usernameController.text =
                                                 element['username'];
                                             passwordController.text =
                                                 element['password'];
                                             setState(() {
-                                              selectedUserType = element['role'];
+                                              selectedUserType =
+                                                  element['role'];
+                                              selectedEmployee =
+                                                  element['employee']['id']
+                                                          .toString() +
+                                                      ' - ' +
+                                                      element['employee']
+                                                          ['names'] +
+                                                      ' ' +
+                                                      element['employee']
+                                                          ['last_names'];
                                             });
                                             scrollController.jumpTo(430);
                                           }),
@@ -500,78 +531,8 @@ class _AddUserPageState extends State<AddUserPage> {
                                     Text('Aceptar')
                                   ],
                                 ),
-                                onPressed: () async {
-                                  var user = {};
-
-                                  if (usernameController.text.length == 0) {
-                                    setState(() {
-                                      usernamevalid = false;
-                                    });
-                                    return;
-                                  } else {
-                                    setState(() {
-                                      usernamevalid = true;
-                                    });
-                                    user['username'] = usernameController.text;
-                                  }
-
-                                  if (passwordController.text.length == 0) {
-                                    setState(() {
-                                      passwordvalid = false;
-                                      return;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      passwordvalid = true;
-                                    });
-                                    user['password'] = passwordController.text;
-                                  }
-
-                                  if (selectedUserType == null) {
-                                    setState(() {
-                                      rolevalid = false;
-                                      return;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      rolevalid = true;
-                                    });
-                                    user['role'] = selectedUserType;
-                                  }
-
-                                  if (selectedEmployee == null) {
-                                    setState(() {
-                                      employeevalid = false;
-                                      return;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      employeevalid = true;
-                                    });
-                                    var employeeId =
-                                        selectedEmployee.split('-');
-                                    user['employees_id'] = employeeId[0].trim();
-                                  }
-
-                                  user["state"] = 'true';
-
-                                  await API.addUser(user).then((response) {
-                                    if (response) {
-                                      _successDialog();
-                                      usernameController.clear();
-                                      passwordController.clear();
-                                      setState(() {
-                                        selectedUserType = null;
-                                        selectedEmployee = null;
-                                      });
-                                    } else {
-                                      print('Error');
-                                    }
-                                  });
-
-                                  await API.getUsers().then((response) {
-                                    users = response;
-                                  });
+                                onPressed: () {
+                                  _createOrEditUser();
                                 }),
                             FlatButton(
                                 child: Row(
@@ -579,14 +540,34 @@ class _AddUserPageState extends State<AddUserPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     Icon(
-                                      Icons.delete_outline,
+                                      Icons.warning,
                                       size: 40,
                                       color: Colors.orange,
                                     ),
-                                    Text('Eliminar')
+                                    Text('Deshabilitar')
                                   ],
                                 ),
-                                onPressed: () {}),
+                                onPressed: () {
+                                  if (isEditing) {
+                                    API.updateUser({
+                                      'id': selectedUser,
+                                      'state': false
+                                    }).then((response) {
+                                      if (response) {
+                                        _changeStateDialog();
+                                        usernameController.clear();
+                                        passwordController.clear();
+                                        isEditing = false;
+                                        setState(() {
+                                          selectedUserType = null;
+                                          selectedEmployee = null;
+                                        });
+                                      } else {
+                                        _errorDialog();
+                                      }
+                                    });
+                                  }
+                                }),
                           ],
                         ),
                         Row(
@@ -610,6 +591,7 @@ class _AddUserPageState extends State<AddUserPage> {
                                 passwordController.clear();
                                 setState(() {
                                   selectedUserType = null;
+                                  selectedEmployee = null;
                                 });
                               },
                             )
@@ -659,5 +641,164 @@ class _AddUserPageState extends State<AddUserPage> {
                 ),
               ));
         });
+  }
+
+  void _errorDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Falló!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Surgió un problema, por favor intente más tarde',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void _changeStateDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Éxito!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Se deshabilitó al usuario correctamente',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.info,
+                      color: Colors.blueAccent[200],
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void _createOrEditUser() async {
+    var user = {};
+    if (usernameController.text.length == 0) {
+      setState(() {
+        usernamevalid = false;
+      });
+      return;
+    } else {
+      setState(() {
+        usernamevalid = true;
+      });
+      user['username'] = usernameController.text;
+    }
+
+    if (passwordController.text.length == 0) {
+      setState(() {
+        passwordvalid = false;
+        return;
+      });
+    } else {
+      setState(() {
+        passwordvalid = true;
+      });
+      user['password'] = passwordController.text;
+    }
+
+    if (selectedUserType == null) {
+      setState(() {
+        rolevalid = false;
+        return;
+      });
+    } else {
+      setState(() {
+        rolevalid = true;
+      });
+      user['role'] = selectedUserType;
+    }
+
+    if (selectedEmployee == null) {
+      setState(() {
+        employeevalid = false;
+        return;
+      });
+    } else {
+      setState(() {
+        employeevalid = true;
+      });
+      var employeeId = selectedEmployee.split('-');
+      user['employees_id'] = int.parse(employeeId[0].trim());
+    }
+
+    user["state"] = true;
+
+    if (isEditing) {
+      user['id'] = selectedUser;
+      await API.updateUser(user).then((response) {
+        if (response) {
+          _successDialog();
+          usernameController.clear();
+          passwordController.clear();
+          isEditing = false;
+          setState(() {
+            selectedUserType = null;
+            selectedEmployee = null;
+          });
+        } else {
+          _errorDialog();
+        }
+      });
+    } else {
+      await API.addUser(user).then((response) {
+        if (response) {
+          _successDialog();
+          usernameController.clear();
+          passwordController.clear();
+          setState(() {
+            selectedUserType = null;
+            selectedEmployee = null;
+          });
+        } else {
+          _errorDialog();
+        }
+      });
+    }
+    await API.getUsers().then((response) {
+      setState(() {
+        users = response;
+      });
+    });
   }
 }

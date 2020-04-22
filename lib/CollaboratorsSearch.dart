@@ -210,7 +210,8 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           widthFactor: 10,
                           heightFactor: 8,
                           child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(Colors.teal[800]),
+                            valueColor:
+                                AlwaysStoppedAnimation(Colors.teal[800]),
                           ),
                         );
                       } else {
@@ -291,8 +292,11 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                           employee['pay_per_hour'].toString();
                                     }),
                                     DataCell(
-                                        Text(employee['category']
-                                            ['category_name']), onTap: () {
+                                        Text(employee['category'] ==
+                                                null
+                                            ? ""
+                                            : employee['category']
+                                                ['category_name']), onTap: () {
                                       scrollController.animateTo(560,
                                           duration: Duration(seconds: 1),
                                           curve: Curves.fastOutSlowIn);
@@ -469,7 +473,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                     controller: daysController,
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText: 'Total de dias Trabajados',
+                      labelText: 'Total de días Trabajados',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),

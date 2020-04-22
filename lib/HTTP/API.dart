@@ -16,10 +16,10 @@ class API{
   }
 
   static Future<List> getUsers() async{
-    var response = await http.get(url + 'users');
+    var response = await http.get(url + 'colaboradores');
     if (response.statusCode == 200){
       var jsonResponse = convert.jsonDecode(response.body);
-      return jsonResponse["respuesta: "];
+      return jsonResponse["datos"];
     }else{
       return null;
     }
@@ -56,13 +56,21 @@ class API{
   }
 
   static Future<bool> addUser(Map user) async{
-    var response = await http.post(url + 'add-user', body: convert.jsonEncode(user));
+    var response = await http.post(url + 'add-user',headers: {'content-type':'application/json'} , body: convert.json.encode(user));
     if (response.statusCode == 200){
       return true;
     }else{
       return false;
     }
+  }
 
+  static Future<bool> updateUser(Map user) async{
+    var response = await http.put(url + 'actualizar-usuario', headers: {'content-type':'application/json'}, body: convert.json.encode(user));
+    if (response.statusCode == 200){
+      return true;
+    }else{
+      return false;
+    }
   }
 
 }
