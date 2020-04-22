@@ -14,11 +14,18 @@ class _AddUserPageState extends State<AddUserPage> {
   //Variable para manejar el scroll de la página
   final scrollController = ScrollController();
 
-  //bool _valid = true;
+  bool isEditing = false;
   String selectedEmployee;
   String selectedUserType;
-  var selectedUser;
+  int selectedUser;
   List users;
+  List employees;
+
+  //Validaciones
+  bool usernamevalid = true;
+  bool passwordvalid = true;
+  bool rolevalid = true;
+  bool employeevalid = true;
 
   //Controllers Form
   final usernameController = TextEditingController();
@@ -28,11 +35,18 @@ class _AddUserPageState extends State<AddUserPage> {
 
   @override
   void initState() {
-    API.getUsers().then((response){
+    API.getUsers().then((response) {
       setState(() {
         users = response;
       });
     });
+
+    API.getEmployees().then((response) {
+      setState(() {
+        employees = response;
+      });
+    });
+
     super.initState();
   }
 
@@ -85,7 +99,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   Container(
                     padding: EdgeInsets.only(left: 30, bottom: 20),
                     child: Text(
-                      'Hola ' + globals.user,
+                      'Hola ' + globals.userLog,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
@@ -185,126 +199,131 @@ class _AddUserPageState extends State<AddUserPage> {
                 shrinkWrap: true,
                 children: <Widget>[
                   SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: DataTable(
-                        columns: [
-                          DataColumn(
-                              label: Text(
-                            'Usuario',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'Contraseña',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'Tipo de Usuario',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )),
-                        ],
-                        rows: users
-                            .map(((element) => DataRow(
-                                  cells: [
-                                    DataCell(Text(element['username']),
-                                        onTap: () {
-                                      selectedUser = element;
+                      scrollDirection: Axis.horizontal,
+                      child: () {
+                        if (users == null) {
+                          return Center(
+                            heightFactor: 7,
+                            widthFactor: 10,
+                            child: CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation(Colors.teal[800]),
+                            ),
+                          );
+                        }
+                        {
+                          return DataTable(
+                              columns: [
+                                DataColumn(
+                                    label: Text(
+                                  'Usuario',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'Contraseña',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                                DataColumn(
+                                    label: Text(
+                                  'Tipo de Usuario',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
+                                )),
+                              ],
+                              rows: users
+                                  .map(((element) => DataRow(
+                                        cells: [
+                                          DataCell(Text(element['username']),
+                                              onTap: () {
+                                            isEditing = true;
+                                            selectedUser = element['id'];
 
-                                      usernameController.text =
-                                          element['username'];
-                                      passwordController.text =
-                                          element['password'];
+                                            usernameController.text =
+                                                element['username'];
+                                            passwordController.text =
+                                                element['password'];
 
-                                      setState(() {
-                                        if(element['role']=='0'){
-                                          selectedUserType = 'admin';
-                                        }else if(element['role']=='1'){
-                                          selectedUserType = 'contador';
-                                        }else{
-                                          selectedUserType = 'digitador';
-                                        }
-                                      });
-                                      scrollController.jumpTo(430);
-                                    }),
-                                    DataCell(Text(element['password']),
-                                        onTap: () {
-                                      selectedUser = element;
+                                            setState(() {
+                                              selectedUserType =
+                                                  element['role'];
+                                              selectedEmployee =
+                                                  element['employee']['id']
+                                                          .toString() +
+                                                      ' - ' +
+                                                      element['employee']
+                                                          ['names'] +
+                                                      ' ' +
+                                                      element['employee']
+                                                          ['last_names'];
+                                            });
+                                            scrollController.jumpTo(430);
+                                          }),
+                                          DataCell(Text(element['password']),
+                                              onTap: () {
+                                            isEditing = true;
+                                            selectedUser = element['id'];
 
-                                      usernameController.text =
-                                          element['username'];
-                                      passwordController.text =
-                                          element['password'];
-                                      setState(() {
-                                        if(element['role']=='0'){
-                                          selectedUserType = 'admin';
-                                        }else if(element['role']=='1'){
-                                          selectedUserType = 'contador';
-                                        }else{
-                                          selectedUserType = 'digitador';
-                                        }
-                                      });
-                                      scrollController.jumpTo(430);
-                                    }),
-                                    DataCell(Text((){
-                                      if(element['role'] == "0"){
-                                        return 'Administrador';
-                                      }else if(element['role']== "1"){
-                                        return 'Contador';
-                                      }else{
-                                        return 'Digitador';
-                                      }
-                                    }()),
-                                    
-                                    onTap: () {
-                                      selectedUser = element;
+                                            usernameController.text =
+                                                element['username'];
+                                            passwordController.text =
+                                                element['password'];
+                                            setState(() {
+                                              selectedUserType =
+                                                  element['role'];
+                                              selectedEmployee =
+                                                  element['employee']['id']
+                                                          .toString() +
+                                                      ' - ' +
+                                                      element['employee']
+                                                          ['names'] +
+                                                      ' ' +
+                                                      element['employee']
+                                                          ['last_names'];
+                                            });
+                                            scrollController.jumpTo(430);
+                                          }),
+                                          DataCell(Text(() {
+                                            if (element['role'] == "0") {
+                                              return 'Administrador';
+                                            } else if (element['role'] == "1") {
+                                              return 'Contador';
+                                            } else {
+                                              return 'Digitador';
+                                            }
+                                          }()), onTap: () {
+                                            isEditing = true;
+                                            selectedUser = element['id'];
 
-                                      usernameController.text =
-                                          element['username'];
-                                      passwordController.text =
-                                          element['password'];
-                                      setState(() {
-                                        if(element['role']=='0'){
-                                          selectedUserType = 'admin';
-                                        }else if(element['role']=='1'){
-                                          selectedUserType = 'contador';
-                                        }else{
-                                          selectedUserType = 'digitador';
-                                        }
-                                      });
-                                      scrollController.jumpTo(430);
-                                    }),
-                                  ],
-                                )))
-                            .toList()
-                        /* [
-                        DataRow(cells: [
-                          DataCell(Text('hamiltong98')),
-                          DataCell(Text('1234567')),
-                          DataCell(Text('admin')),
-                        ],
-                        ),
-                        DataRow(cells: [
-                          DataCell(Text('marlons67')),
-                          DataCell(Text('abcdef')),
-                          DataCell(Text('admin')),
-                        ]),
-                        DataRow(cells: [
-                          DataCell(Text('edwinv78')),
-                          DataCell(Text('sape.com')),
-                          DataCell(Text('digitador')),
-                        ]),
-                        DataRow(cells: [
-                          DataCell(Text('franciscos87')),
-                          DataCell(Text('xyfsa.98')),
-                          DataCell(Text('contador')),
-                        ]),
-                      ], */
-                        ),
-                  ),
+                                            usernameController.text =
+                                                element['username'];
+                                            passwordController.text =
+                                                element['password'];
+                                            setState(() {
+                                              selectedUserType =
+                                                  element['role'];
+                                              selectedEmployee =
+                                                  element['employee']['id']
+                                                          .toString() +
+                                                      ' - ' +
+                                                      element['employee']
+                                                          ['names'] +
+                                                      ' ' +
+                                                      element['employee']
+                                                          ['last_names'];
+                                            });
+                                            scrollController.jumpTo(430);
+                                          }),
+                                        ],
+                                      )))
+                                  .toList());
+                        }
+                      }()),
                 ],
               ),
             ),
@@ -330,6 +349,9 @@ class _AddUserPageState extends State<AddUserPage> {
                       controller: usernameController,
                       decoration: InputDecoration(
                           labelText: 'Nombre de Usuario',
+                          errorText: usernamevalid
+                              ? null
+                              : '¡Debe rellenar este campo!',
                           contentPadding: EdgeInsets.only(left: 15),
                           border: OutlineInputBorder(
                               borderRadius:
@@ -348,6 +370,9 @@ class _AddUserPageState extends State<AddUserPage> {
                       controller: passwordController,
                       decoration: InputDecoration(
                           labelText: 'Contraseña',
+                          errorText: passwordvalid
+                              ? null
+                              : '¡Debe rellenar este campo!',
                           contentPadding: EdgeInsets.only(left: 15),
                           border: OutlineInputBorder(
                               borderRadius:
@@ -406,15 +431,15 @@ class _AddUserPageState extends State<AddUserPage> {
                           contentPadding: EdgeInsets.only(left: 15)),
                       items: [
                         DropdownMenuItem(
-                          value: 'digitador',
+                          value: '2',
                           child: Text('Digitador'),
                         ),
                         DropdownMenuItem(
-                          value: 'admin',
+                          value: '0',
                           child: Text('Administrador'),
                         ),
                         DropdownMenuItem(
-                          value: 'contador',
+                          value: '1',
                           child: Text('Contador'),
                         ),
                       ],
@@ -427,40 +452,65 @@ class _AddUserPageState extends State<AddUserPage> {
                       iconSize: 30,
                     ),
                   ),
+                  () {
+                    if (!rolevalid) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '¡Debe selecciona un Tipo de Usuario!',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      );
+                    }
+                    return Container();
+                  }(),
                   Container(
-                    margin: EdgeInsets.all(10),
-                    child: SearchableDropdown.single(
-                      icon: Icon(Icons.more_vert),
-                      hint: 'Seleccionar Empleado',
-                      searchHint: 'Empleados - Selecciona uno:',
-                      value: selectedEmployee,
-                      items: [
-                        DropdownMenuItem(
-                          value: 'AID00001 - Hamilton García',
-                          child: Text('AID00001 - Hamilton García'),
+                      margin: EdgeInsets.all(10),
+                      child: () {
+                        if (employees == null) {
+                          return Container();
+                        } else {
+                          return SearchableDropdown.single(
+                            icon: Icon(Icons.more_vert),
+                            hint: 'Seleccionar Empleado',
+                            searchHint: 'Empleados - Selecciona uno:',
+                            value: selectedEmployee,
+                            items: employees
+                                .map(((employee) => DropdownMenuItem(
+                                      value: employee['id'].toString() +
+                                          ' - ' +
+                                          employee['names'] +
+                                          ' ' +
+                                          employee['last_names'],
+                                      child: Text(employee['names'] +
+                                          ' ' +
+                                          employee['last_names']),
+                                    )))
+                                .toList(),
+                            underline: Container(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedEmployee = value;
+                              });
+                            },
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          );
+                        }
+                      }()),
+                  () {
+                    if (!employeevalid) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          '¡Debe selecciona un Tipo de Usuario!',
+                          style: TextStyle(color: Colors.red),
                         ),
-                        DropdownMenuItem(
-                          value: 'AID00002 - Edwin Vega',
-                          child: Text('AID00002 - Edwin Vega'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'AID00003 - Marlon Sánchez',
-                          child: Text('AID00003 - Marlon Sánchez'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'AID00004 - Francisco Sotelo',
-                          child: Text('AID00004 - Francisco Sotelo'),
-                        ),
-                      ],
-                      underline: Container(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedEmployee = value;
-                        });
-                      },
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ),
+                      );
+                    }
+                    return Container();
+                  }(),
                   Container(
                     margin: EdgeInsets.only(top: 10, bottom: 40),
                     child: Column(
@@ -481,21 +531,43 @@ class _AddUserPageState extends State<AddUserPage> {
                                     Text('Aceptar')
                                   ],
                                 ),
-                                onPressed: () => _successDialog()),
+                                onPressed: () {
+                                  _createOrEditUser();
+                                }),
                             FlatButton(
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: <Widget>[
                                     Icon(
-                                      Icons.delete_outline,
+                                      Icons.warning,
                                       size: 40,
                                       color: Colors.orange,
                                     ),
-                                    Text('Eliminar')
+                                    Text('Deshabilitar')
                                   ],
                                 ),
-                                onPressed: () {}),
+                                onPressed: () {
+                                  if (isEditing) {
+                                    API.updateUser({
+                                      'id': selectedUser,
+                                      'state': false
+                                    }).then((response) {
+                                      if (response) {
+                                        _changeStateDialog();
+                                        usernameController.clear();
+                                        passwordController.clear();
+                                        isEditing = false;
+                                        setState(() {
+                                          selectedUserType = null;
+                                          selectedEmployee = null;
+                                        });
+                                      } else {
+                                        _errorDialog();
+                                      }
+                                    });
+                                  }
+                                }),
                           ],
                         ),
                         Row(
@@ -519,6 +591,7 @@ class _AddUserPageState extends State<AddUserPage> {
                                 passwordController.clear();
                                 setState(() {
                                   selectedUserType = null;
+                                  selectedEmployee = null;
                                 });
                               },
                             )
@@ -568,5 +641,164 @@ class _AddUserPageState extends State<AddUserPage> {
                 ),
               ));
         });
+  }
+
+  void _errorDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Falló!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Surgió un problema, por favor intente más tarde',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void _changeStateDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Éxito!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Se deshabilitó al usuario correctamente',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.info,
+                      color: Colors.blueAccent[200],
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void _createOrEditUser() async {
+    var user = {};
+    if (usernameController.text.length == 0) {
+      setState(() {
+        usernamevalid = false;
+      });
+      return;
+    } else {
+      setState(() {
+        usernamevalid = true;
+      });
+      user['username'] = usernameController.text;
+    }
+
+    if (passwordController.text.length == 0) {
+      setState(() {
+        passwordvalid = false;
+        return;
+      });
+    } else {
+      setState(() {
+        passwordvalid = true;
+      });
+      user['password'] = passwordController.text;
+    }
+
+    if (selectedUserType == null) {
+      setState(() {
+        rolevalid = false;
+        return;
+      });
+    } else {
+      setState(() {
+        rolevalid = true;
+      });
+      user['role'] = selectedUserType;
+    }
+
+    if (selectedEmployee == null) {
+      setState(() {
+        employeevalid = false;
+        return;
+      });
+    } else {
+      setState(() {
+        employeevalid = true;
+      });
+      var employeeId = selectedEmployee.split('-');
+      user['employees_id'] = int.parse(employeeId[0].trim());
+    }
+
+    user["state"] = true;
+
+    if (isEditing) {
+      user['id'] = selectedUser;
+      await API.updateUser(user).then((response) {
+        if (response) {
+          _successDialog();
+          usernameController.clear();
+          passwordController.clear();
+          isEditing = false;
+          setState(() {
+            selectedUserType = null;
+            selectedEmployee = null;
+          });
+        } else {
+          _errorDialog();
+        }
+      });
+    } else {
+      await API.addUser(user).then((response) {
+        if (response) {
+          _successDialog();
+          usernameController.clear();
+          passwordController.clear();
+          setState(() {
+            selectedUserType = null;
+            selectedEmployee = null;
+          });
+        } else {
+          _errorDialog();
+        }
+      });
+    }
+    await API.getUsers().then((response) {
+      setState(() {
+        users = response;
+      });
+    });
   }
 }
