@@ -5,20 +5,6 @@ import 'package:groovin_widgets/groovin_widgets.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'HTTP/API.dart';
-/* 
-class RegisterCollaborator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Collaborator',
-      home: RegisterCollaboratorView(),
-      theme: ThemeData(
-        primaryColor: Colors.green[800],
-        accentColor: Colors.black,
-      ),
-    );
-  }
-} */
 
 class RegisterCollaboratorView extends StatefulWidget {
   @override
@@ -120,30 +106,37 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
               height: 5,
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(40, 5, 40, 15),
-              child: OutlineDropdownButton(
-                inputDecoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
-                  ),
-                  contentPadding: EdgeInsets.only(left: 20),
-                ),
-                items: categories
-                    .map(((category) => DropdownMenuItem(
-                          value: category['id'].toString(),
-                          child: Text(category['category_name']),
-                        )))
-                    .toList(),
-                //underline: Container(),
-                onChanged: (value) {
-                  setState(() {
-                    selectCategory = value;
-                  });
-                },
-                hint: Text('Seleccionar Categoría'),
-                iconSize: 40,
-              ),
-            ),
+                margin: EdgeInsets.fromLTRB(40, 5, 40, 15),
+                child: () {
+                  if (categories == null) {
+                    return CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.teal[800]),
+                    );
+                  } else {
+                    return OutlineDropdownButton(
+                      inputDecoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                        ),
+                        contentPadding: EdgeInsets.only(left: 20),
+                      ),
+                      items: categories
+                          .map(((category) => DropdownMenuItem(
+                                value: category['id'].toString(),
+                                child: Text(category['category_name']),
+                              )))
+                          .toList(),
+                      //underline: Container(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectCategory = value;
+                        });
+                      },
+                      hint: Text('Seleccionar Categoría'),
+                      iconSize: 40,
+                    );
+                  }
+                }()),
           ]),
           //Fin de la primera parte de la pantalla (Foto y dropdown options)
           //Inicio de la Segunda Parte de la pantalla (Textfields)

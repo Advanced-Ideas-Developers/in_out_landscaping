@@ -1,19 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-/* 
-class AssistancePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Assistance',
-      home: AssistanceView(), //Vista de Asistencias
-      theme: ThemeData(
-        primaryColor: Colors.green[800],
-        accentColor: Colors.black,
-      ),
-    );
-  }
-} */
 
 class AssistanceView extends StatefulWidget {
   @override
@@ -116,6 +102,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                             ).then((date) {
                               setState(() {
                                 _dateTime = date;
+                                print(DateTime.now());
                               });
                             });
                           },

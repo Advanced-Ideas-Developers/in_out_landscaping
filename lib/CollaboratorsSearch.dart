@@ -4,6 +4,7 @@ import 'Collaborator.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'HTTP/API.dart';
+import 'Classes/Globals.dart' as globals;
 
 class CollaboratorSearchView extends StatefulWidget {
   @override
@@ -39,12 +40,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
 
   @override
   void initState() {
-    API.getEmployees().then((response) {
-      setState(() {
-        employees = response;
-        print(employees);
-      });
-    });
+    _chargeEmployees();
     super.initState();
   }
 
@@ -92,25 +88,36 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                         left: 18,
                       ),
                     ),
-                    Container(
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.add,
-                        ),
-                        color: Colors.white,
-                        //splashColor: Colors.green,
-                        iconSize: 30,
-                        tooltip: 'Añadir Colaborador',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      RegisterCollaboratorView()));
-                        },
-                      ),
-                      margin: EdgeInsets.only(bottom: 9, right: 15),
-                    )
+                    () {
+                      if (globals.role == '0') {
+                        return Container(
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.add,
+                            ),
+                            color: Colors.white,
+                            //splashColor: Colors.green,
+                            iconSize: 30,
+                            tooltip: 'Añadir Colaborador',
+                            onPressed: () {
+                              Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              RegisterCollaboratorView()))
+                                  .then((value) {
+                                _chargeEmployees();
+                              });
+                            },
+                          ),
+                          margin: EdgeInsets.only(bottom: 9, right: 15),
+                        );
+                      } else {
+                        return SizedBox(
+                          height: 60,
+                        );
+                      }
+                    }()
                   ],
                 ),
               ],
@@ -142,13 +149,26 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () async {
-                      API
-                          .getEmployeesbyName(searchController.text)
-                          .then((response) {
-                        setState(() {
-                          employees = response;
+                      if (searchController.text.trim().isEmpty) {
+                        _chargeEmployees();
+                      } else if (filtro == 'Nombre') {
+                        await API
+                            .getEmployeesbyName(searchController.text)
+                            .then((response) {
+                          setState(() {
+                            employees = response;
+                          });
                         });
-                      });
+                      } else if (filtro == 'Categoría') {
+                        print('entre');
+                        await API
+                            .getEmployeesbyCategory(searchController.text)
+                            .then((response) {
+                          setState(() {
+                            employees = response;
+                          });
+                        });
+                      }
                     },
                   ),
                 ),
@@ -236,16 +256,27 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           ],
                           rows: employees
                               .map(((employee) => DataRow(cells: [
-                                    DataCell(IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CollaboratorView()));
-                                      },
-                                    )),
+                                    DataCell(() {
+                                      if (globals.role == '0') {
+                                        return IconButton(
+                                          icon: Icon(Icons.edit),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CollaboratorView(
+                                                          collaborator:
+                                                              employee,
+                                                        ))).then((value) {
+                                              _chargeEmployees();
+                                            });
+                                          },
+                                        );
+                                      }else{
+                                        return Text('');
+                                      }
+                                    }()),
                                     DataCell(Text(employee['names']),
                                         onTap: () {
                                       scrollController.animateTo(560,
@@ -292,8 +323,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                           employee['pay_per_hour'].toString();
                                     }),
                                     DataCell(
-                                        Text(employee['category'] ==
-                                                null
+                                        Text(employee['category'] == null
                                             ? ""
                                             : employee['category']
                                                 ['category_name']), onTap: () {
@@ -674,5 +704,13 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
         ],
       ),
     );
+  }
+
+  void _chargeEmployees() {
+    API.getEmployees().then((response) {
+      setState(() {
+        employees = response;
+      });
+    });
   }
 }

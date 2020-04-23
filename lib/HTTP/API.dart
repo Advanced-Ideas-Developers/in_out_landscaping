@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 const url = 'http://161.35.100.25/emps/';
@@ -49,7 +50,17 @@ class API{
     var response = await http.get(url + 'colaboradores-nombre/$nombre');
     if (response.statusCode == 200){
       var jsonResponse = convert.jsonDecode(response.body);
-      return jsonResponse["datos"];
+      return jsonResponse["respuesta: "];
+    }else{
+      return null;
+    }
+  }
+
+  static Future<List> getEmployeesbyCategory(String category) async{
+    var response = await http.get(url + 'colaboradores-categoria/$category');
+    if (response.statusCode == 200){
+      var jsonResponse = convert.jsonDecode(response.body);
+      return jsonResponse["response"];
     }else{
       return null;
     }
@@ -72,7 +83,7 @@ class API{
       return false;
     }
   }
-  
+
   static Future<bool> addEmployee(Map employee) async {
     var response = await http.post(url + 'add-employee',headers: {'content-type':'application/json'},
     body: convert.json.encode(employee));
@@ -82,6 +93,15 @@ class API{
     }else {
       return false;
     }
-  } 
+  }
+
+  static Future<bool> updateEmployee(Map employee) async{
+    var response = await http.put(url + 'employees', headers: {'content-type':'application/json'}, body: convert.json.encode(employee));
+    if(response.statusCode == 200){
+      return true;
+    }else{
+      return false;
+    }
+  }
 
 }
