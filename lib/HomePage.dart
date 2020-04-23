@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                 }
               }(),
               () {
-                if (globals.role == '1' || globals.role == '1') {
+                if (globals.role == '1' || globals.role == '0') {
                   return Center(
                     child: CollaboratorSearchView(),
                   );
