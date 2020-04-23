@@ -76,22 +76,29 @@ class _HomePageState extends State<HomePage> {
                       Positioned(
                         child: Row(
                           children: <Widget>[
-                            ButtonTheme(
-                              minWidth: 30,
-                              child: FlatButton(
-                                child: Icon(
-                                  Icons.person_add,
-                                  size: 30,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddUserPage()));
-                                },
-                              ),
-                            ),
+                            () {
+                              if (globals.role == '0') {
+                                return ButtonTheme(
+                                  minWidth: 30,
+                                  child: FlatButton(
+                                    child: Icon(
+                                      Icons.person_add,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddUserPage()));
+                                    },
+                                  ),
+                                );
+                              } else {
+                                return SizedBox();
+                              }
+                            }(),
                             ButtonTheme(
                               minWidth: 30,
                               child: FlatButton(
@@ -101,6 +108,9 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.white,
                                 ),
                                 onPressed: () {
+                                  globals.name = '';
+                                  globals.role = '';
+                                  globals.userLog = '';
                                   Navigator.pop(context);
                                 },
                               ),
@@ -114,12 +124,36 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Center(
-                child: AssistanceView(),
-              ),
-              Center(
-                child: CollaboratorSearchView(),
-              )
+              () {
+                if (globals.role == '2' || globals.role == '0') {
+                  return Center(
+                    child: AssistanceView(),
+                  );
+                } else {
+                  return Center(
+                    child: Icon(
+                      Icons.lock,
+                      color: Colors.black38,
+                      size: 70,
+                    ),
+                  );
+                }
+              }(),
+              () {
+                if (globals.role == '1' || globals.role == '1') {
+                  return Center(
+                    child: CollaboratorSearchView(),
+                  );
+                }else{
+                  return Center(
+                    child: Icon(
+                      Icons.lock,
+                      color: Colors.black38,
+                      size: 70,
+                    ),
+                  );
+                }
+              }(),
             ],
           ),
           bottomNavigationBar: BottomAppBar(
@@ -156,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     text: 'Colaboradores',
                   ),
-                ),
+                )
               ],
             ),
           ),

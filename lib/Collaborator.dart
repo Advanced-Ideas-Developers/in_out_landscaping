@@ -1,22 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
-
-/* class Collaborator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Collaborators',
-      home: CollaboratorView(),
-      theme: ThemeData(
-        primaryColor: Colors.green[800],
-        accentColor: Colors.black,
-      ),
-    );
-  }
-} */
+import 'package:in_out_landscaping/HTTP/API.dart';
 
 class CollaboratorView extends StatefulWidget {
+  //Variable que alamacena los datos del colaborador recibido
+  final collaborator;
+
+  CollaboratorView({Key key, @required this.collaborator}) : super(key: key);
+
   @override
   _CollaboratorViewState createState() => _CollaboratorViewState();
 }
@@ -29,6 +23,30 @@ class _CollaboratorViewState extends State<CollaboratorView> {
   final phoneController = TextEditingController();
   final pagoController = TextEditingController();
   bool _valid = true;
+  int selectedCategory;
+
+  //Lista de Categorías
+  List categories;
+
+  //Construcción inicial de la interfaz
+  @override
+  void initState() {
+    setState(() {
+      nameController.text = widget.collaborator['names'];
+      lasNameController.text = widget.collaborator['last_names'];
+      emailController.text = widget.collaborator['email'];
+      phoneController.text = widget.collaborator['phone'];
+      pagoController.text = widget.collaborator['pay_per_hour'].toString();
+    });
+    API.getCategories().then((response) {
+      setState(() {
+        categories = response;
+        selectedCategory = widget.collaborator['categories_id'];
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,6 +93,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
               children: <Widget>[
                 Container(
                   child: TextField(
+                    readOnly: true,
                     controller: nameController,
                     decoration: InputDecoration(
                       labelText: 'Nombres',
@@ -94,6 +113,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                 ),
                 Container(
                   child: TextField(
+                    readOnly: true,
                     controller: lasNameController,
                     decoration: InputDecoration(
                       labelText: 'Apellidos',
@@ -162,7 +182,8 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                 Container(
                   child: TextField(
                     controller: pagoController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
                     decoration: InputDecoration(
                       labelText: 'Pago por Hora',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -179,18 +200,35 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                 SizedBox(
                   height: 10,
                 ),
-                (34 == 35 ? Text('34') : SizedBox()),
-                Container(
-                  child: OutlineDropdownButton(
-                    inputDecoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 25),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(50))),
-                    ),
-                    items: [],
-                    hint: Text('Categoría'),
-                  ),
-                ),
+                Container(child: () {
+                  if (categories == null) {
+                    return CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation(Colors.teal[800]),
+                    );
+                  } else {
+                    return OutlineDropdownButton(
+                      inputDecoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 25),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50))),
+                      ),
+                      items: categories
+                          .map(((category) => DropdownMenuItem(
+                                value: category['id'],
+                                child: Text(category['category_name']),
+                              )))
+                          .toList(),
+                      hint: Text('Categoría'),
+                      value: selectedCategory,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCategory = value;
+                        });
+                      },
+                    );
+                  }
+                }()),
               ],
             ),
           ),
@@ -253,6 +291,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
             alignment: Alignment.center,
             margin: EdgeInsets.fromLTRB(15, 13, 15, 10),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 FlatButton(
                   child: Row(
@@ -264,7 +303,7 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                         size: 40,
                       ),
                       Text(
-                        'Registrar',
+                        'Guardar',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -273,33 +312,48 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                       ),
                     ],
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final employee = {
+                      'id': widget.collaborator['id'],
+                      'email': emailController.text,
+                      'phone': phoneController.text,
+                      'pay_per_day': int.parse(pagoController.text),
+                      'categories_id': selectedCategory
+                    };
+
+                    await API.updateEmployee(employee).then((response) {
+                      if (response) {
+                        _successDialog();
+                      }
+                    });
+
+                  },
                 ),
                 SizedBox(
                   width: 5,
                 ),
                 FlatButton(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Icon(
-                      Icons.close,
-                      color: Colors.red,
-                      size: 40,
-                    ),
-                    Text(
-                      'Cancelar',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        //fontWeight: FontWeight.bold,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 40,
                       ),
-                    ),
-                  ],
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+                      Text(
+                        'Cancelar',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          //fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             ),
@@ -307,5 +361,77 @@ class _CollaboratorViewState extends State<CollaboratorView> {
         ],
       ),
     );
+  }
+
+  void _successDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          Future.delayed(Duration(seconds: 3), (){
+            Navigator.of(context).pop(true);
+            Navigator.of(context).pop(true);
+          });
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Éxito!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Se actualizó correctamente',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
+  }
+
+  void _errorDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Falló!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      'Surgió un problema, por favor intente más tarde',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
   }
 }
