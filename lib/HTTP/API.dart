@@ -66,6 +66,16 @@ class API{
     }
   }
 
+  static Future<List> getAssistance() async{
+    var response = await http.get(url + 'inout-employee');
+    if (response.statusCode == 200){
+      var jsonResponse = convert.jsonDecode(response.body);
+      return jsonResponse["respuesta: "];
+    }else{
+      return null;
+    }
+  }
+
   static Future<bool> addUser(Map user) async{
     var response = await http.post(url + 'add-user',headers: {'content-type':'application/json'} , body: convert.json.encode(user));
     if (response.statusCode == 200){
@@ -100,6 +110,28 @@ class API{
     if(response.statusCode == 200){
       return true;
     }else{
+      return false;
+    }
+  }
+
+  static Future<bool> addAssistance(Map inout) async {
+    var response = await http.post(url + 'inout',headers: {'content-type':'application/json'},
+      body: convert.json.encode(inout)
+    );
+    if (response.statusCode == 200) {
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  static Future<bool> updateAssisance(Map inout) async {
+    var response = await http.put(url + 'inout', headers: {'content-type':'application/json'},
+      body: convert.json.encode(inout)
+    );
+    if (response.statusCode == 200) {
+      return true;
+    }else {
       return false;
     }
   }
