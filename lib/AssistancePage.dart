@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'HTTP/API.dart';
 /* 
 class AssistancePage extends StatelessWidget {
   @override
@@ -24,6 +25,24 @@ class _AssistanceViewState extends State<AssistanceView> {
   DateTime _dateTime;
   String _time = "Entrada";
   String _timeTwo = "Salida";
+  List employee;
+  List assistance;
+  @override
+  void initState() {
+    API.getEmployees().then((response) {
+      setState(() {
+        employee = response;
+      });
+    });
+    API.getAssistance().then((response){
+      setState(() {
+        assistance = response;
+        print(assistance);
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchController = TextEditingController();
@@ -72,7 +91,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                       fontSize: 18,
                     ),
                   ),
-                  margin: EdgeInsets.only(top: 20,left: 18, bottom: 15),
+                  margin: EdgeInsets.only(top: 20, left: 18, bottom: 15),
                 ),
               ],
             ),
@@ -160,10 +179,38 @@ class _AssistanceViewState extends State<AssistanceView> {
                     ],
                   ),
                 ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text('Inicio de Jornada'),
+                        textColor: Colors.white,
+                        color: Colors.greenAccent[700],
+                        onPressed: () async{
+                          var inout = {};
+                          for (int i = 0;i<employee.length;i++) {
+                             inout['employees_id'] = employee[i]['id'];
+                          }
+                          //inout['state'] = true;
+                          await API.addAssistance(inout).then((response){});
+                        },
+                      ),
+                      FlatButton(
+                        child: Text('Fin de Jornada'),
+                        color: Colors.redAccent[700],
+                        textColor: Colors.white,
+                        onPressed: () {
+
+                        },
+                      ),
+                    ],
+                  ),
+                ),
                 // Pantalla final
                 Container(
                   alignment: Alignment.topCenter,
-                  margin: EdgeInsets.all(8.0),
+                  margin: EdgeInsets.fromLTRB(8, 8, 8, 15),
                   padding: EdgeInsets.all(15.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
@@ -181,316 +228,110 @@ class _AssistanceViewState extends State<AssistanceView> {
                     shrinkWrap: true,
                     children: <Widget>[
                       SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                            columns: <DataColumn>[
-                              /* DataColumn(
+                          scrollDirection: Axis.horizontal,
+                          child: () {
+                            if (employee == null) {
+                              return Center(
+                                widthFactor: 10,
+                                heightFactor: 8,
+                                child: CircularProgressIndicator(
+                                  valueColor:
+                                      AlwaysStoppedAnimation(Colors.teal[800]),
+                                ),
+                              );
+                            } else {
+                              return DataTable(
+                                columns: <DataColumn>[
+                                  /* DataColumn(
                                 label: Text('Profile'),
                               ), */
-                              DataColumn(
-                                label: Text('Nombre'),
-                              ),
-                              DataColumn(
-                                label: Text('Hora Entrada'),
-                              ),
-                              DataColumn(
-                                label: Text('Hora Salida'),
-                              ),
-                              DataColumn(
+                                  DataColumn(
+                                    label: Text('Nombre'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Hora Entrada'),
+                                  ),
+                                  DataColumn(
+                                    label: Text('Hora Salida'),
+                                  ),
+                                  /* DataColumn(
                                 label: Text('Confirmar'),
-                              ),
-                            ],
-                            rows: [
-                              DataRow(cells: <DataCell>[
-                                /* DataCell(
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(Icons.photo),
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ), */
-                                DataCell(Text('Hamilton García')),
-                                DataCell(
-                                  FlatButton(
-                                    color: Colors.greenAccent[700],
-                                    textColor: Colors.white,
-                                    child: Text(
-                                      '$_time',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          onConfirm: (time) {
-                                        print('confirm $time');
-                                        _time =
-                                            '${time.hour} : ${time.minute} ';
-                                        setState(() {});
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.es);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  FlatButton(
-                                    child: Text(
-                                      '$_timeTwo',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    color: Colors.redAccent[700],
-                                    textColor: Colors.white,
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          onConfirm: (time) {
-                                        print('confirm $time');
-                                        _timeTwo =
-                                            '${time.hour} : ${time.minute}';
-                                        setState(() {});
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.es);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.check,
-                                      color: Colors.green[400],
-                                    ),
-                                    onPressed: () {
-                                      // Mensaje indicando que se ha agregado correctamente las horas
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => SimpleDialog(
-                                          title: Text(
-                                              '¡Hora de Entrada Registrada!'),
-                                          children: <Widget>[
-                                            Container(
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.check_circle,
-                                                  size: 50,
+                              ), */
+                                ],
+                                rows: assistance
+                                    .map(
+                                      ((assis) => DataRow(cells: [
+                                            DataCell( () {
+                                              if(assis['employee'] == null){
+                                                return Text('');
+                                              }
+                                              return Text(assis['employee']['names']);
+                                              
+                                            }()),
+                                            DataCell(
+                                              FlatButton(
+                                                color: Colors.greenAccent[700],
+                                                textColor: Colors.white,
+                                                child: Text(
+                                                  '$_time',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                                color: Colors.green[800],
                                                 onPressed: () {
-                                                  Navigator.pop(context);
+                                                  DatePicker.showDatePicker(
+                                                      context,
+                                                      showTitleActions: true,
+                                                      onConfirm: (time) {
+                                                    print('confirm $time');
+                                                    _time = '${time.hour} : ${time.minute} ';
+                                                    setState(() {});
+                                                  },
+                                                      currentTime:
+                                                          DateTime.now(),
+                                                      locale: LocaleType.es);
+                                                  setState(() {
+                                                    if(assis['check_in_time'] == null){
+                                                        return _time = 'Entrada';
+                                                      }
+                                                      return assis['check_in_time'];
+                                                  });
                                                 },
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ]),
-                              DataRow(cells: <DataCell>[
-                                /* DataCell(
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(Icons.photo),
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ), */
-                                DataCell(Text('Wiz')),
-                                DataCell(
-                                  FlatButton(
-                                    color: Colors.greenAccent[700],
-                                    textColor: Colors.white,
-                                    child: Text(
-                                      '$_time',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          onConfirm: (time) {
-                                        print('confirm $time');
-                                        _time =
-                                            '${time.hour} : ${time.minute} ';
-                                        setState(() {});
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.es);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  FlatButton(
-                                    color: Colors.redAccent[700],
-                                    textColor: Colors.white,
-                                    child: Text(
-                                      '$_timeTwo',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          onConfirm: (time) {
-                                        print('confirm $time');
-                                        _timeTwo =
-                                            '${time.hour} : ${time.minute}';
-                                        setState(() {});
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.es);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.check,
-                                      color: Colors.green[400],
-                                    ),
-                                    onPressed: () {
-                                      // Mensaje indicando que se ha agregado correctamente las horas
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => SimpleDialog(
-                                          title: Text(
-                                              '¡Hora de Entrada Registrada!'),
-                                          children: <Widget>[
-                                            Container(
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.check_circle,
-                                                  size: 50,
+                                            DataCell(
+                                              FlatButton(
+                                                color: Colors.redAccent[700],
+                                                textColor: Colors.white,
+                                                child: Text(
+                                                  '$_timeTwo',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                                color: Colors.green[800],
                                                 onPressed: () {
-                                                  Navigator.pop(context);
+                                                  DatePicker.showDatePicker(
+                                                      context,
+                                                      showTitleActions: true,
+                                                      onConfirm: (time) {
+                                                    print('confirm $time');
+                                                    _timeTwo =
+                                                        '${time.hour} : ${time.minute}';
+                                                    setState(() {});
+                                                  },
+                                                      currentTime:
+                                                          DateTime.now(),
+                                                      locale: LocaleType.es);
+                                                  setState(() {});
                                                 },
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ]),
-                              DataRow(cells: <DataCell>[
-                                /* DataCell(
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: IconButton(
-                                      icon: Icon(Icons.photo),
-                                      onPressed: () {},
-                                    ),
-                                  ),
-                                ), */
-                                DataCell(Text('Edwin')),
-                                DataCell(
-                                  FlatButton(
-                                    color: Colors.greenAccent[700],
-                                    textColor: Colors.white,
-                                    child: Text(
-                                      '$_time',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          onConfirm: (time) {
-                                        print('confirm $time');
-                                        _time =
-                                            '${time.hour} : ${time.minute} ';
-                                        setState(() {});
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.es);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  FlatButton(
-                                    color: Colors.redAccent[700],
-                                    textColor: Colors.white,
-                                    child: Text(
-                                      '$_timeTwo',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      DatePicker.showDatePicker(context,
-                                          showTitleActions: true,
-                                          onConfirm: (time) {
-                                        print('confirm $time');
-                                        _timeTwo =
-                                            '${time.hour} : ${time.minute}';
-                                        setState(() {});
-                                      },
-                                          currentTime: DateTime.now(),
-                                          locale: LocaleType.es);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.check,
-                                      color: Colors.green[400],
-                                    ),
-                                    onPressed: () {
-                                      // Mensaje indicando que se ha agregado correctamente las horas
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => SimpleDialog(
-                                          title: Text(
-                                              '¡Hora de Entrada Registrada!'),
-                                          children: <Widget>[
-                                            Container(
-                                              child: IconButton(
-                                                icon: Icon(
-                                                  Icons.check_circle,
-                                                  size: 50,
-                                                ),
-                                                color: Colors.green[800],
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ]),
-                            ].toList()),
-                      ),
+                                          ])),
+                                    )
+                                    .toList(),
+                              );
+                            }
+                          }()),
                     ],
                   ),
                 ),
