@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'HTTP/API.dart';
+import 'package:intl/intl.dart';
 
 class AssistanceView extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class AssistanceView extends StatefulWidget {
 
 class _AssistanceViewState extends State<AssistanceView> {
   DateTime _dateTime;
+  var now = DateTime.now();
   String _time = "Entrada";
   String _timeTwo = "Salida";
   List employee;
@@ -20,12 +22,7 @@ class _AssistanceViewState extends State<AssistanceView> {
         employee = response;
       });
     });
-    API.getAssistance().then((response){
-      setState(() {
-        assistance = response;
-        print(assistance);
-      });
-    });
+    _chargeAssistance();
     super.initState();
   }
 
@@ -109,7 +106,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                   margin: EdgeInsets.fromLTRB(0, 20, 0, 27),
                   child: Row(
                     children: <Widget>[
-                      Container(
+                      /* Container(
                         child: IconButton(
                           icon: Icon(Icons.date_range),
                           onPressed: () {
@@ -126,7 +123,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                             });
                           },
                         ),
-                      ),
+                      ), */
                       SizedBox(
                         width: 10,
                       ),
@@ -174,22 +171,30 @@ class _AssistanceViewState extends State<AssistanceView> {
                         child: Text('Inicio de Jornada'),
                         textColor: Colors.white,
                         color: Colors.greenAccent[700],
-                        onPressed: () async{
-                          var inout = {};
-                          for (int i = 0;i<employee.length;i++) {
-                             inout['employees_id'] = employee[i]['id'];
-                          }
-                          //inout['state'] = true;
-                          await API.addAssistance(inout).then((response){});
-                        },
+                        onPressed: (assistance?.isEmpty ?? false)
+                            ? () async {
+                                setState(() {
+                                  assistance = null;
+                                });
+                                var inout = {};
+
+                                for (int i = 0; i < employee.length; i++) {
+                                  inout['employees_id'] = employee[i]['id'];
+                                  await API
+                                      .addAssistance(inout)
+                                      .then((response) {});
+                                }
+                                _chargeAssistance();
+                                //inout['state'] = true;
+                              }
+                            : null,
+                        disabledColor: Colors.greenAccent[100],
                       ),
                       FlatButton(
                         child: Text('Fin de Jornada'),
                         color: Colors.redAccent[700],
                         textColor: Colors.white,
-                        onPressed: () {
-
-                        },
+                        onPressed: () {},
                       ),
                     ],
                   ),
@@ -217,7 +222,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                       SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: () {
-                            if (employee == null) {
+                            if (assistance == null) {
                               return Center(
                                 widthFactor: 10,
                                 heightFactor: 8,
@@ -248,42 +253,83 @@ class _AssistanceViewState extends State<AssistanceView> {
                                 rows: assistance
                                     .map(
                                       ((assis) => DataRow(cells: [
-                                            DataCell( () {
-                                              if(assis['employee'] == null){
+                                            DataCell(() {
+                                              if (assis['employee'] == null) {
                                                 return Text('');
                                               }
-                                              return Text(assis['employee']['names']);
-                                              
+                                              return Text(
+                                                  assis['employee']['names']);
                                             }()),
                                             DataCell(
                                               FlatButton(
                                                 color: Colors.greenAccent[700],
                                                 textColor: Colors.white,
                                                 child: Text(
-                                                  '$_time',
+                                                  () {
+                                                    if (assis[
+                                                            'check_in_time'] ==
+                                                        null) {
+                                                      return 'Entrada';
+                                                    } else {
+                                                      var time = DateFormat(
+                                                              'h:mm a')
+                                                          .format(DateTime
+                                                              .parse(assis[
+                                                                  'check_in_time']));
+                                                      return '$time';
+                                                    }
+                                                  }(),
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                   ),
                                                 ),
-                                                onPressed: () {
-                                                  DatePicker.showDatePicker(
+                                                onPressed:
+                                                    assis['check_in_time'] ==
+                                                            null
+                                                        ? () async {
+                                                            var inout = {
+                                                              'id': assis['id'],
+                                                              'employees_id': assis[
+                                                                  'employees_id'],
+                                                              'check_in_time':
+                                                                  DateTime.now()
+                                                                      .toIso8601String()
+                                                            };
+
+                                                            await API
+                                                                .updateAssistance(
+                                                                    inout)
+                                                                .then(
+                                                                    (response) {
+                                                              if (response) {
+                                                                setState(() {
+                                                                  _chargeAssistance();
+                                                                });
+                                                              }
+                                                            });
+                                                            /* DatePicker.showDatePicker(
                                                       context,
                                                       showTitleActions: true,
                                                       onConfirm: (time) {
                                                     print('confirm $time');
-                                                    _time = '${time.hour} : ${time.minute} ';
+                                                    _time =
+                                                        '${time.hour} : ${time.minute} ';
                                                     setState(() {});
                                                   },
                                                       currentTime:
                                                           DateTime.now(),
-                                                      locale: LocaleType.es);
-                                                  setState(() {
-                                                    if(assis['check_in_time'] == null){
-                                                        return _time = 'Entrada';
-                                                      }
-                                                      return assis['check_in_time'];
-                                                  });
-                                                },
+                                                      locale: LocaleType.es); */
+                                                            /* setState(() {
+                                                    if (assis[
+                                                            'check_in_time'] ==
+                                                        null) {
+                                                      return _time = 'Entrada';
+                                                    }
+                                                    return assis[
+                                                        'check_in_time'];
+                                                  }); */
+                                                          }
+                                                        : null,
                                               ),
                                             ),
                                             DataCell(
@@ -291,13 +337,46 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                 color: Colors.redAccent[700],
                                                 textColor: Colors.white,
                                                 child: Text(
-                                                  '$_timeTwo',
+                                                  (){
+                                                    if (assis[
+                                                            'departure_time'] ==
+                                                        null) {
+                                                      return 'Salida';
+                                                    } else {
+                                                      var time = DateFormat(
+                                                              'h:mm a')
+                                                          .format(DateTime
+                                                              .parse(assis[
+                                                                  'departure_time']));
+                                                      return '$time';
+                                                    }
+                                                  }(),
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                   ),
                                                 ),
-                                                onPressed: () {
-                                                  DatePicker.showDatePicker(
+                                                onPressed: assis['departure_time'] == null ? () async {
+                                                  if (assis['check_in_time'] ==
+                                                      null) {
+                                                    _dialog(
+                                                        'Primero debe registrar la hora de entrada'
+                                                    );
+                                                    return;
+                                                  }
+                                                  var inout = {
+                                                    'id': assis['id'],
+                                                    'employees_id': assis['employees_id'],
+                                                    'departure_time':DateTime.now().toIso8601String()
+                                                  };
+
+                                                  await API.createOut(inout).then((response){
+                                                    if(response){
+                                                      setState(() {
+                                                        _chargeAssistance();
+                                                      });
+                                                    }
+                                                  });
+                                                  /* DatePicker.showDatePicker(
                                                       context,
                                                       showTitleActions: true,
                                                       onConfirm: (time) {
@@ -309,8 +388,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                       currentTime:
                                                           DateTime.now(),
                                                       locale: LocaleType.es);
-                                                  setState(() {});
-                                                },
+                                                  setState(() {}); */
+                                                }:null,
                                               ),
                                             ),
                                           ])),
@@ -328,5 +407,59 @@ class _AssistanceViewState extends State<AssistanceView> {
         ],
       ),
     );
+  }
+
+  void _chargeAssistance() {
+    API.getAssistance().then((response) {
+      setState(() {
+        assistance = response
+            .where((assis) => () {
+                  String formattedNow = DateFormat('yyyy-MM-dd').format(now);
+                  String formattedAssis = DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(assis['created_at']));
+                  //print(formattedNow + ' ' + formattedAssis);
+                  if (formattedAssis == formattedNow) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }())
+            .toList();
+      });
+    });
+  }
+
+  void _dialog(String message) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Información!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      '$message',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.info,
+                      color: Colors.blue[300],
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
   }
 }
