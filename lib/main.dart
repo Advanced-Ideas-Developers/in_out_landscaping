@@ -44,6 +44,7 @@ class _LoginState extends State<Login> {
   
   @override
   Widget build(BuildContext context) {
+    //Construcción del Textfield de Usuario 
     final txtUsername = TextField(
         autofocus: false,
         controller: usernameController,
@@ -55,6 +56,7 @@ class _LoginState extends State<Login> {
         },
     );
 
+    //Construcción del Textfield de Contraseña
     final txtPassword = TextField(
       autocorrect: false,
       controller: passwordController,
