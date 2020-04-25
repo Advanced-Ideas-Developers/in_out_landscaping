@@ -9,19 +9,19 @@ class AssistanceView extends StatefulWidget {
 }
 
 class _AssistanceViewState extends State<AssistanceView> {
-  DateTime _dateTime;
+  /* DateTime _dateTime; */
   var now = DateTime.now();
-  String _time = "Entrada";
-  String _timeTwo = "Salida";
+  /* String _time = "Entrada";
+  String _timeTwo = "Salida"; */
   List employee;
   List assistance;
   @override
   void initState() {
-    API.getEmployees().then((response) {
+    /* API.getEmployees().then((response) {
       setState(() {
         employee = response;
       });
-    });
+    }); */
     _chargeAssistance();
     super.initState();
   }
