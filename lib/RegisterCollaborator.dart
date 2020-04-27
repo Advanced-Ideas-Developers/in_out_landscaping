@@ -114,6 +114,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     );
                   } else {
                     return OutlineDropdownButton(
+                      value: selectCategory,
                       inputDecoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
@@ -430,6 +431,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     }
 
                     employee['state'] = true;
+                    employee['categories_id'] = int.parse(selectCategory);
 
                     await API.addEmployee(employee).then((response) {
                       if (response) {
@@ -439,6 +441,9 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                         emailController.clear();
                         phoneController.clear();
                         payHoursController.clear();
+                        setState(() {
+                          selectCategory = null;
+                        });
                       } else {
                         _showDialogErrorRegister();
                       }

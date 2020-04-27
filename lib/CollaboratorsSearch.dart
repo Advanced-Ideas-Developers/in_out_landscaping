@@ -15,10 +15,11 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   final scrollController = ScrollController();
 
   //Variables para los rangos de fechas
-  String _date = "Inicio";
-  String _date2 = "Final";
+  String _initDate = "Inicio";
+  String _finalDate = "Final";
   bool _valid = true;
   String filtro = 'Nombre';
+  int employeeID;
 
   // Textfields Controller
   final searchController = TextEditingController();
@@ -291,6 +292,14 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                       phoneController.text = employee['phone'];
                                       payHoursController.text =
                                           employee['pay_per_hour'].toString();
+                                      employeeID = employee['id'];
+                                      daysController.clear();
+                                      hoursController.clear();
+                                      payTotalController.clear();
+                                      setState(() {
+                                        _initDate = 'Inicio';
+                                        _finalDate = 'Final';
+                                      });
                                     }),
                                     DataCell(Text(employee['last_names']),
                                         onTap: () {
@@ -306,6 +315,14 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                       phoneController.text = employee['phone'];
                                       payHoursController.text =
                                           employee['pay_per_hour'].toString();
+                                      employeeID = employee['id'];
+                                      daysController.clear();
+                                      hoursController.clear();
+                                      payTotalController.clear();
+                                      setState(() {
+                                        _initDate = 'Inicio';
+                                        _finalDate = 'Final';
+                                      });
                                     }),
                                     DataCell(Text(employee['email']),
                                         onTap: () {
@@ -321,6 +338,14 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                       phoneController.text = employee['phone'];
                                       payHoursController.text =
                                           employee['pay_per_hour'].toString();
+                                      employeeID = employee['id'];
+                                      daysController.clear();
+                                      hoursController.clear();
+                                      payTotalController.clear();
+                                      setState(() {
+                                        _initDate = 'Inicio';
+                                        _finalDate = 'Final';
+                                      });
                                     }),
                                     DataCell(
                                         Text(employee['category'] == null
@@ -339,6 +364,14 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                       phoneController.text = employee['phone'];
                                       payHoursController.text =
                                           employee['pay_per_hour'].toString();
+                                      employeeID = employee['id'];
+                                      daysController.clear();
+                                      hoursController.clear();
+                                      payTotalController.clear();
+                                      setState(() {
+                                        _initDate = 'Inicio';
+                                        _finalDate = 'Final';
+                                      });
                                     }),
                                   ])))
                               .toList(),
@@ -575,12 +608,12 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           print('change $date');
                         }, onConfirm: (date) {
                           print('confirm $date');
-                          _date = '${date.day}/${date.month}/${date.year}';
+                          _initDate = '${date.year}-${date.month}-${date.day}';
                           setState(() {});
                         }, currentTime: DateTime.now(), locale: LocaleType.es);
                       },
                       child: Text(
-                        '$_date',
+                        '$_initDate',
                         style: TextStyle(
                           color: Colors.black54,
                           fontSize: 20,
@@ -596,12 +629,12 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                           print('change $date');
                         }, onConfirm: (date) {
                           print('confirm $date');
-                          _date2 = '${date.day}/${date.month}/${date.year}';
+                          _finalDate = '${date.year}-${date.month}-${date.day}';
                           setState(() {});
                         }, currentTime: DateTime.now(), locale: LocaleType.es);
                       },
                       child: Text(
-                        '$_date2',
+                        '$_finalDate',
                         style: TextStyle(
                           color: Colors.black54,
                           fontSize: 20,
@@ -638,7 +671,43 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                         fontWeight: FontWeight.normal,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      var employeePay;
+                      var totalHours = 0;
+                      var totalDays;
+                      var totalPay = 0.0;
+
+                      if(_initDate == 'Inicio'){
+                        _dialog('Debe seleccionar una hora Inicial');
+                        return;
+                      }
+
+                      if(_finalDate == 'Final'){
+                        _dialog('Debe seleccionar una hora Final');
+                        return;
+                      }
+
+                      await API.getHoursEmployee(employeeID, _initDate, _finalDate).then((response){
+                        employeePay = response;
+                      });
+
+                      if(employeePay.isEmpty){
+                        _dialog('No se encontraron registros para el trabajador en estas fechas');
+                        return;
+                      }
+
+                      for(int i = 0; i < employeePay.length; i++){
+                        totalHours += employeePay[i]['total_horas'];
+                        totalPay += employeePay[i]['total_pay'];
+                      }
+
+                      //print(employeeID);
+                      totalDays = Duration(hours: totalHours).inDays;
+
+                      daysController.text = totalDays.toString();
+                      hoursController.text = totalHours.toString();
+                      payTotalController.text = totalPay.toString(); 
+                    },
                   ),
                 ),
               ],
@@ -647,7 +716,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
           //Fin de la Tercera parte de la Pantalla Contenedores de Fecha
           //Inicio de la Ultima parte de la Pantalla DataTable con scroll
           //Fin de la Ultima parte de la Pantalla DataTable con scroll
-          Container(
+          /* Container(
             alignment: Alignment.center,
             margin: EdgeInsets.all(8.0),
             padding: EdgeInsets.all(8.0),
@@ -700,7 +769,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                     ]),
                   ].toList()),
             ),
-          ),
+          ), */
         ],
       ),
     );
@@ -712,5 +781,39 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
         employees = response;
       });
     });
+  }
+
+  void _dialog(String message) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+              title: Center(
+                child: Text(
+                  '¡Información!',
+                ),
+              ),
+              content: Container(
+                height: 90,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      '$message',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Icon(
+                      Icons.info,
+                      color: Colors.blue[300],
+                      size: 35,
+                    )
+                  ],
+                ),
+              ));
+        });
   }
 }

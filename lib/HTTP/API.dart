@@ -75,6 +75,16 @@ class API {
     }
   }
 
+  static Future<List> getAssistanceSearch(String nombre) async {
+    var response = await http.get(url + 'inout-employee-name/$nombre');
+    if (response.statusCode == 200) {
+      var jsonResponse = convert.jsonDecode(response.body);
+      return jsonResponse["datos"];
+    } else {
+      return null;
+    }
+  }
+
   static Future<bool> addUser(Map user) async {
     var response = await http.post(url + 'add-user',
         headers: {'content-type': 'application/json'},
@@ -150,6 +160,16 @@ class API {
       return true;
     } else {
       return false;
+    }
+  }
+
+  static Future<List> getHoursEmployee(int id, String initDate, String finalDate) async{
+    var response = await http.get(url + 'inout-between/$id/$initDate/$finalDate');
+    if(response.statusCode == 200){
+      var responseJson = convert.jsonDecode(response.body);
+      return responseJson['datos'];
+    }else{
+      return null;
     }
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'HTTP/API.dart';
 import 'package:intl/intl.dart';
 
@@ -15,20 +15,22 @@ class _AssistanceViewState extends State<AssistanceView> {
   String _timeTwo = "Salida"; */
   List employee;
   List assistance;
+  final searchController = TextEditingController();
+
   @override
   void initState() {
-    /* API.getEmployees().then((response) {
+    API.getEmployees().then((response) {
+      if (!mounted) return;
       setState(() {
         employee = response;
       });
-    }); */
+    });
     _chargeAssistance();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final searchController = TextEditingController();
     List<Color> _coloresHeader = [Colors.black, Colors.teal[800]];
     //String _dropdownValue = '-'; //Variable a utilizar en el dropdown
     // Inico de construccion de TextFields
@@ -134,12 +136,19 @@ class _AssistanceViewState extends State<AssistanceView> {
                         ),
                       ),
                       Container(
+                        margin: EdgeInsets.only(right: 15),
                         child: IconButton(
                           icon: Icon(Icons.search),
-                          onPressed: () {},
+                          onPressed: () async {
+                            if (searchController.text.trim().isEmpty) {
+                              _chargeAssistance();
+                            } else {
+                              _chargeAssistanceSearch(searchController.text);
+                            } 
+                          },
                         ),
                       ),
-                      Container(
+                      /* Container(
                         //alignment: Alignment.centerRight,
                         margin: EdgeInsets.only(right: 5),
                         // Agregando el DropdownButton para hacer filtros de busqueda
@@ -159,16 +168,25 @@ class _AssistanceViewState extends State<AssistanceView> {
                             size: 20,
                           ),
                         ),
-                      ),
+                      ), */
                     ],
                   ),
                 ),
                 Container(
+                  margin: EdgeInsets.only(bottom: 10, left: 15),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       FlatButton(
-                        child: Text('Inicio de Jornada'),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(right: 5),
+                              child: Icon(Icons.schedule),
+                            ),
+                            Text('Inicio de Jornada')
+                          ],
+                        ),
                         textColor: Colors.white,
                         color: Colors.greenAccent[700],
                         onPressed: (assistance?.isEmpty ?? false)
@@ -190,12 +208,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                             : null,
                         disabledColor: Colors.greenAccent[100],
                       ),
-                      FlatButton(
+                      /* FlatButton(
                         child: Text('Fin de Jornada'),
                         color: Colors.redAccent[700],
                         textColor: Colors.white,
                         onPressed: () {},
-                      ),
+                      ), */
                     ],
                   ),
                 ),
@@ -337,7 +355,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                 color: Colors.redAccent[700],
                                                 textColor: Colors.white,
                                                 child: Text(
-                                                  (){
+                                                  () {
                                                     if (assis[
                                                             'departure_time'] ==
                                                         null) {
@@ -355,28 +373,36 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                     fontSize: 14,
                                                   ),
                                                 ),
-                                                onPressed: assis['departure_time'] == null ? () async {
-                                                  if (assis['check_in_time'] ==
-                                                      null) {
-                                                    _dialog(
-                                                        'Primero debe registrar la hora de entrada'
-                                                    );
-                                                    return;
-                                                  }
-                                                  var inout = {
-                                                    'id': assis['id'],
-                                                    'employees_id': assis['employees_id'],
-                                                    'departure_time':DateTime.now().toIso8601String()
-                                                  };
+                                                onPressed: assis[
+                                                            'departure_time'] ==
+                                                        null
+                                                    ? () async {
+                                                        if (assis[
+                                                                'check_in_time'] ==
+                                                            null) {
+                                                          _dialog(
+                                                              'Primero debe registrar la hora de entrada');
+                                                          return;
+                                                        }
+                                                        var inout = {
+                                                          'id': assis['id'],
+                                                          'employees_id': assis[
+                                                              'employees_id'],
+                                                          'departure_time':
+                                                              DateTime.now()
+                                                                  .toIso8601String()
+                                                        };
 
-                                                  await API.createOut(inout).then((response){
-                                                    if(response){
-                                                      setState(() {
-                                                        _chargeAssistance();
-                                                      });
-                                                    }
-                                                  });
-                                                  /* DatePicker.showDatePicker(
+                                                        await API
+                                                            .createOut(inout)
+                                                            .then((response) {
+                                                          if (response) {
+                                                            setState(() {
+                                                              _chargeAssistance();
+                                                            });
+                                                          }
+                                                        });
+                                                        /* DatePicker.showDatePicker(
                                                       context,
                                                       showTitleActions: true,
                                                       onConfirm: (time) {
@@ -389,7 +415,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                           DateTime.now(),
                                                       locale: LocaleType.es);
                                                   setState(() {}); */
-                                                }:null,
+                                                      }
+                                                    : null,
                                               ),
                                             ),
                                           ])),
@@ -411,6 +438,28 @@ class _AssistanceViewState extends State<AssistanceView> {
 
   void _chargeAssistance() {
     API.getAssistance().then((response) {
+      if (!mounted) return;
+      setState(() {
+        assistance = response
+            .where((assis) => () {
+                  String formattedNow = DateFormat('yyyy-MM-dd').format(now);
+                  String formattedAssis = DateFormat('yyyy-MM-dd')
+                      .format(DateTime.parse(assis['created_at']));
+                  //print(formattedNow + ' ' + formattedAssis);
+                  if (formattedAssis == formattedNow) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }())
+            .toList();
+      });
+    });
+  }
+
+  void _chargeAssistanceSearch(String nombre) {
+    API.getAssistanceSearch(nombre).then((response) {
+      if (!mounted) return;
       setState(() {
         assistance = response
             .where((assis) => () {
