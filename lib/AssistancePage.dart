@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 //import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'HTTP/API.dart';
 import 'package:intl/intl.dart';
@@ -144,7 +145,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                               _chargeAssistance();
                             } else {
                               _chargeAssistanceSearch(searchController.text);
-                            } 
+                            }
                           },
                         ),
                       ),
@@ -305,13 +306,26 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                     assis['check_in_time'] ==
                                                             null
                                                         ? () async {
+                                                            var time;
+                                                            await DatePicker
+                                                                .showTime12hPicker(
+                                                                    context,
+                                                                    showTitleActions:
+                                                                        true,
+                                                                    onConfirm:
+                                                                        (date) {
+                                                              time = date;
+                                                            },
+                                                                    locale:
+                                                                        LocaleType
+                                                                            .es);
+
                                                             var inout = {
                                                               'id': assis['id'],
                                                               'employees_id': assis[
                                                                   'employees_id'],
-                                                              'check_in_time':
-                                                                  DateTime.now()
-                                                                      .toIso8601String()
+                                                              'check_in_time': time
+                                                                  .toIso8601String()
                                                             };
 
                                                             await API
@@ -377,6 +391,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                             'departure_time'] ==
                                                         null
                                                     ? () async {
+                                                        var time;
                                                         if (assis[
                                                                 'check_in_time'] ==
                                                             null) {
@@ -384,13 +399,26 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                               'Primero debe registrar la hora de entrada');
                                                           return;
                                                         }
+
+                                                        await DatePicker
+                                                            .showTime12hPicker(
+                                                                context,
+                                                                showTitleActions:
+                                                                    true,
+                                                                onConfirm:
+                                                                    (date) {
+                                                          time = date;
+                                                        },
+                                                                locale:
+                                                                    LocaleType
+                                                                        .es);
+
                                                         var inout = {
                                                           'id': assis['id'],
                                                           'employees_id': assis[
                                                               'employees_id'],
-                                                          'departure_time':
-                                                              DateTime.now()
-                                                                  .toIso8601String()
+                                                          'departure_time': time
+                                                              .toIso8601String()
                                                         };
 
                                                         await API

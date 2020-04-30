@@ -196,7 +196,11 @@ class _LoginState extends State<Login> {
     var user;
 
     await API.getUser(usernameController.text).then((response) {
-      user = response[0];
+      if(response.isEmpty){
+        user = null;  
+      }else{
+        user = response[0];
+      }
     });
 
     if (user != null &&
