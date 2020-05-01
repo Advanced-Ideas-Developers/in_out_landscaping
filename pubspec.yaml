@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.2+1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -91,13 +91,12 @@ flutter:
         - asset: assets/fonts/Montserrat-Thin.ttf
         - asset: assets/fonts/Montserrat-Italic.ttf
         - asset: assets/fonts/Montserrat-Regular.ttf
-
     #- family: Roboto
-     # fonts:
-      #  - asset: assets/fonts/Roboto-Black.ttf
-       # - asset: assets/fonts/Roboto-Bold.ttf
-        #- asset: assets/fonts/Roboto-Thin.ttf
-       # - asset: assets/fonts/Roboto-Italic.ttf
-        #- asset: assets/fonts/Roboto-Regular.ttf
+    # fonts:
+    #  - asset: assets/fonts/Roboto-Black.ttf
+    # - asset: assets/fonts/Roboto-Bold.ttf
+    #- asset: assets/fonts/Roboto-Thin.ttf
+    # - asset: assets/fonts/Roboto-Italic.ttf
+    #- asset: assets/fonts/Roboto-Regular.ttf
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

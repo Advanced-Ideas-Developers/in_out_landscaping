@@ -22,12 +22,13 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
   final phoneController = TextEditingController();
   final payHoursController = TextEditingController();
   //Variales booleanas de los textfield
-  bool employeenamevalid;
-  bool employeelastnamevalid;
-  bool employeemailvalid;
-  bool employeephonevalid;
-  bool employeepayvalid;
-  bool employeecategory;
+  bool employeenamevalid = true;
+  bool employeelastnamevalid = true;
+  bool employeemailvalid = true;
+  bool employeephonevalid = true;
+  bool employeepayvalid = true;
+  bool employeecategory = true;
+
   String selectCategory;
   @override
   void initState() {
@@ -116,6 +117,9 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     return OutlineDropdownButton(
                       value: selectCategory,
                       inputDecoration: InputDecoration(
+                        errorText: !employeecategory
+                            ? '!Seleccione una Categoría!'
+                            : null,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                         ),
@@ -149,8 +153,10 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                   child: TextField(
                     controller: nameController,
                     decoration: InputDecoration(
-                      labelText: 'Nombre',
+                      labelText: 'Nombres',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+                      errorText:
+                          !employeenamevalid ? '!Rellene este campo!' : null,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
@@ -168,8 +174,11 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                   child: TextField(
                     controller: lastNameController,
                     decoration: InputDecoration(
-                      labelText: 'Apellido',
+                      labelText: 'Apellidos',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+                      errorText: !employeelastnamevalid
+                          ? '!Rellene este campo!'
+                          : null,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
@@ -239,6 +248,8 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                     decoration: InputDecoration(
                       labelText: 'Pago por Hora',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+                      errorText:
+                          !employeepayvalid ? '!Rellene este campo!' : null,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                       ),
@@ -356,20 +367,18 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                   ),
                   onPressed: () async {
                     var employee = {};
-                    if (int.parse(selectCategory) == 1) {
+                    if (selectCategory == null) {
+                      setState(() {
+                        employeecategory = false;
+                      });
+                      return;
+                    } else {
                       setState(() {
                         employeecategory = true;
                       });
                       employee['categories_id'] = int.parse(selectCategory);
-                    } else {
-                      if (int.parse(selectCategory) == 2) {
-                        setState(() {
-                          employeecategory = true;
-                        });
-                        employee['categories_id'] = int.parse(selectCategory);
-                      }
                     }
-                    if (nameController.text.length == 0) {
+                    if (nameController.text.trim().length == 0) {
                       setState(() {
                         employeenamevalid = false;
                       });
@@ -381,7 +390,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                       employee['names'] = nameController.text;
                     }
 
-                    if (lastNameController.text.length == 0) {
+                    if (lastNameController.text.trim().length == 0) {
                       setState(() {
                         employeelastnamevalid = false;
                       });
@@ -393,7 +402,7 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                       employee['last_names'] = lastNameController.text;
                     }
 
-                    if (emailController.text.length == 0) {
+                    /* if (emailController.text.trim().length == 0) {
                       setState(() {
                         employeemailvalid = false;
                       });
@@ -403,9 +412,9 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                         employeemailvalid = true;
                       });
                       employee['email'] = emailController.text;
-                    }
+                    } */
 
-                    if (phoneController.text.length == 0) {
+                    /* if (phoneController.text.trim().length == 0) {
                       setState(() {
                         employeephonevalid = false;
                       });
@@ -415,9 +424,9 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                         employeephonevalid = true;
                       });
                       employee['phone'] = phoneController.text;
-                    }
+                    } */
 
-                    if (payHoursController.text.length == 0) {
+                    if (payHoursController.text.trim().length == 0) {
                       setState(() {
                         employeepayvalid = false;
                       });
@@ -430,8 +439,9 @@ class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
                           int.parse(payHoursController.text);
                     }
 
+                    employee['phone'] = phoneController.text;
+                    employee['email'] = emailController.text;
                     employee['state'] = true;
-                    employee['categories_id'] = int.parse(selectCategory);
 
                     await API.addEmployee(employee).then((response) {
                       if (response) {

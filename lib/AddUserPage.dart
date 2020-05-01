@@ -458,7 +458,7 @@ class _AddUserPageState extends State<AddUserPage> {
                         margin: EdgeInsets.only(bottom: 10),
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          '¡Debe selecciona un Tipo de Usuario!',
+                          '¡Debe seleccionar un Tipo de Usuario!',
                           style: TextStyle(color: Colors.red),
                         ),
                       );
@@ -502,9 +502,9 @@ class _AddUserPageState extends State<AddUserPage> {
                     if (!employeevalid) {
                       return Container(
                         margin: EdgeInsets.only(bottom: 10),
-                        alignment: Alignment.centerLeft,
+                        alignment: Alignment.center,
                         child: Text(
-                          '¡Debe selecciona un Tipo de Usuario!',
+                          '¡Debe seleccionar un Empleado!',
                           style: TextStyle(color: Colors.red),
                         ),
                       );
@@ -621,7 +621,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 ),
               ),
               content: Container(
-                height: 90,
+                height: 120,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -728,8 +728,8 @@ class _AddUserPageState extends State<AddUserPage> {
     if (passwordController.text.length == 0) {
       setState(() {
         passwordvalid = false;
-        return;
       });
+      return;
     } else {
       setState(() {
         passwordvalid = true;
@@ -740,8 +740,8 @@ class _AddUserPageState extends State<AddUserPage> {
     if (selectedUserType == null) {
       setState(() {
         rolevalid = false;
-        return;
       });
+      return;
     } else {
       setState(() {
         rolevalid = true;
@@ -752,8 +752,8 @@ class _AddUserPageState extends State<AddUserPage> {
     if (selectedEmployee == null) {
       setState(() {
         employeevalid = false;
-        return;
       });
+      return;
     } else {
       setState(() {
         employeevalid = true;
