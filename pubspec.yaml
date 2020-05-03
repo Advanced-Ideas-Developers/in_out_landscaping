@@ -40,8 +40,8 @@ dev_dependencies:
 flutter_icons:
   ios: true
   android: true
-  image_path_ios: "assets/images/logo1.jpg"
-  image_path_android: "assets/images/logo1.jpg"
+  image_path_ios: "assets/images/Epic logo.jpg"
+  image_path_android: "assets/images/Epic logo.jpg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

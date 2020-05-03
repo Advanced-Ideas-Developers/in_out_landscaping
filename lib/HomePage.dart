@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
                     children: <Widget>[
                       Positioned(
                         child: Opacity(
-                          child: Image.asset('assets/images/Logo blanco.png'),
+                          child: Image.asset('assets/images/logo1.jpg'),
                           opacity: 0.10,
                         ),
                         top: 70,
