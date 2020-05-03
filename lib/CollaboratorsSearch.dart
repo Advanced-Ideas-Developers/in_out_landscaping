@@ -259,7 +259,9 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                               .map(((employee) => DataRow(cells: [
                                     DataCell(() {
                                       if (globals.role == '0') {
-                                        return IconButton(
+                                        return Row(
+                                          children: <Widget>[
+                                            IconButton(
                                           icon: Icon(Icons.edit),
                                           onPressed: () {
                                             Navigator.push(
@@ -273,6 +275,16 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                               _chargeEmployees();
                                             });
                                           },
+                                        ),
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.delete
+                                          ),
+                                          onPressed: (){
+                                            _confirmDialog({'id':employee['id'],'state':0});
+                                          },
+                                        )
+                                          ],
                                         );
                                       }else{
                                         return Text('');
@@ -778,9 +790,48 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   void _chargeEmployees() {
     API.getEmployees().then((response) {
       setState(() {
-        employees = response;
+        employees = response.where((employee)=>(){
+          if(employee['state']==1){
+            return true;
+          }else{
+            return false;
+          }
+        }()).toList();
       });
     });
+  }
+
+  void _confirmDialog(Map employee){
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context){
+        return AlertDialog(
+          title: Text('Confirmar Eliminación'),
+          content: Text('¿Desea eliminar a este Colaborador?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Aceptar'),
+              onPressed: () async {
+                await API.updateEmployee(employee).then((response){
+                  setState(() {
+                    _chargeEmployees();
+                  });
+                });
+                Navigator.of(context).pop();
+                _dialog('¡Colaborador eliminado correctamente!');
+              },
+            ),
+            FlatButton(
+              child: Text('Cancelar'),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 
   void _dialog(String message) {
