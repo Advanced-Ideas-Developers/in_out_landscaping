@@ -484,12 +484,15 @@ class _AssistanceViewState extends State<AssistanceView> {
                   String formattedAssis = DateFormat('yyyy-MM-dd')
                       .format(DateTime.parse(assis['created_at']));
                   //print(formattedNow + ' ' + formattedAssis);
-                  if (formattedAssis == formattedNow && globals.role == '0') {
-                    return true;
-                  } else {
-                    if(assis['employee']['categories_id']==globals.category){
+                  if (formattedAssis == formattedNow) {
+                    if(globals.role == '0'){
                       return true;
+                    }else if(globals.category == assis['employee']['categories_id']){
+                      return true;
+                    }else{
+                      return false;
                     }
+                  } else {
                     return false;
                   }
                 }())
@@ -509,7 +512,13 @@ class _AssistanceViewState extends State<AssistanceView> {
                       .format(DateTime.parse(assis['created_at']));
                   //print(formattedNow + ' ' + formattedAssis);
                   if (formattedAssis == formattedNow && globals.role == '0') {
-                    return true;
+                    if(globals.role == '0'){
+                      return true;
+                    }else if(globals.category == assis['employee']['categories_id']){
+                      return true;
+                    }else{
+                      return false;
+                    }
                   } else {
                     return false;
                   }
