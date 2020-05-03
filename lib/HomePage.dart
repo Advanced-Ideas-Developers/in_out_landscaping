@@ -66,6 +66,25 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             margin: EdgeInsets.only(left: 35, top: 14),
                             child: Text(
+                              (){
+                                switch (globals.role) {
+                                  case '0':
+                                    return 'Administrador';
+                                  case '1':
+                                    return 'Contador';
+                                  case '2':
+                                    return 'Digitador';
+                                  default:
+                                    return '';
+                                }
+                              }(),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 35, top: 14),
+                            child: Text(
                               'Epic Landscaping',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 20),

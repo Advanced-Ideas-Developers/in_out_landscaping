@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 //import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'HTTP/API.dart';
 import 'package:intl/intl.dart';
+import 'Classes/Globals.dart' as globals;
 
 class AssistanceView extends StatefulWidget {
   @override
@@ -178,37 +179,46 @@ class _AssistanceViewState extends State<AssistanceView> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      FlatButton(
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(right: 5),
-                              child: Icon(Icons.schedule),
+                      () {
+                        if (globals.role == '0') {
+                          return FlatButton(
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Icon(Icons.schedule),
+                                ),
+                                Text('Inicio de Jornada')
+                              ],
                             ),
-                            Text('Inicio de Jornada')
-                          ],
-                        ),
-                        textColor: Colors.white,
-                        color: Colors.greenAccent[700],
-                        onPressed: (assistance?.isEmpty ?? false)
-                            ? () async {
-                                setState(() {
-                                  assistance = null;
-                                });
-                                var inout = {};
+                            textColor: Colors.white,
+                            color: Colors.greenAccent[700],
+                            onPressed: (assistance?.isEmpty ?? false)
+                                ? () async {
+                                    setState(() {
+                                      assistance = null;
+                                    });
+                                    var inout = {};
 
-                                for (int i = 0; i < employee.length; i++) {
-                                  inout['employees_id'] = employee[i]['id'];
-                                  await API
-                                      .addAssistance(inout)
-                                      .then((response) {});
-                                }
-                                _chargeAssistance();
-                                //inout['state'] = true;
-                              }
-                            : null,
-                        disabledColor: Colors.greenAccent[100],
-                      ),
+                                    for (int i = 0; i < employee.length; i++) {
+                                      if (employee[i]['state'] == 1) {
+                                        inout['employees_id'] =
+                                            employee[i]['id'];
+                                        await API
+                                            .addAssistance(inout)
+                                            .then((response) {});
+                                      }
+                                    }
+                                    _chargeAssistance();
+                                    //inout['state'] = true;
+                                  }
+                                : null,
+                            disabledColor: Colors.greenAccent[100],
+                          );
+                        }else{
+                          return Container();
+                        }
+                      }()
                       /* FlatButton(
                         child: Text('Fin de Jornada'),
                         color: Colors.redAccent[700],
@@ -474,9 +484,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                   String formattedAssis = DateFormat('yyyy-MM-dd')
                       .format(DateTime.parse(assis['created_at']));
                   //print(formattedNow + ' ' + formattedAssis);
-                  if (formattedAssis == formattedNow) {
+                  if (formattedAssis == formattedNow && globals.role == '0') {
                     return true;
                   } else {
+                    if(assis['employee']['categories_id']==globals.category){
+                      return true;
+                    }
                     return false;
                   }
                 }())
@@ -495,7 +508,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                   String formattedAssis = DateFormat('yyyy-MM-dd')
                       .format(DateTime.parse(assis['created_at']));
                   //print(formattedNow + ' ' + formattedAssis);
-                  if (formattedAssis == formattedNow) {
+                  if (formattedAssis == formattedNow && globals.role == '0') {
                     return true;
                   } else {
                     return false;

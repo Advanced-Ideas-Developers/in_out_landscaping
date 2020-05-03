@@ -187,7 +187,7 @@ class _LoginState extends State<Login> {
         ),
         Positioned(
           child: Text(
-            'v 1.0.2',
+            'v 1.0.3',
             style: TextStyle(fontFamily: 'Roboto'),
           ),
           bottom: 10,
@@ -202,7 +202,7 @@ class _LoginState extends State<Login> {
     var user;
 
     await API.getUser(usernameController.text).then((response) {
-      if (response.isEmpty) {
+      if (response?.isEmpty ?? true) {
         user = null;
       } else {
         user = response[0];
@@ -216,6 +216,7 @@ class _LoginState extends State<Login> {
       globals.isLoggedIn = true;
       globals.userLog = user['username'];
       globals.role = user['role'];
+      globals.category = user['employee']['categories_id'];
 
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => HomePage()));
