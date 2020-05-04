@@ -209,6 +209,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                                       if (employee[i]['state'] == 1) {
                                         inout['employees_id'] =
                                             employee[i]['id'];
+                                        inout['created_at'] = 
+                                            now.toIso8601String();
                                         await API
                                             .addAssistance(inout)
                                             .then((response) {});
