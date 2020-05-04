@@ -175,6 +175,11 @@ class _AssistanceViewState extends State<AssistanceView> {
                   ),
                 ),
                 Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(bottom: 10, left: 20),
+                  child: Text('Fecha: ${now.day}/${now.month}/${now.year}', style: TextStyle(fontSize: 15)),
+                ),
+                Container(
                   margin: EdgeInsets.only(bottom: 10, left: 15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
