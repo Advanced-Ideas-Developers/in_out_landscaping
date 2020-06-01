@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
@@ -324,6 +322,8 @@ class _CollaboratorViewState extends State<CollaboratorView> {
                     await API.updateEmployee(employee).then((response) {
                       if (response) {
                         _successDialog();
+                      }else{
+                        _errorDialog();
                       }
                     });
 

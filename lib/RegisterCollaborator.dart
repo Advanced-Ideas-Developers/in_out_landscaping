@@ -1,9 +1,9 @@
-import 'package:flutter/foundation.dart';
+//import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:groovin_widgets/groovin_widgets.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
+//import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'HTTP/API.dart';
 
 class RegisterCollaboratorView extends StatefulWidget {
@@ -13,7 +13,7 @@ class RegisterCollaboratorView extends StatefulWidget {
 }
 
 class _RegisterCollaboratorViewState extends State<RegisterCollaboratorView> {
-  bool _isChecked = false; // Variable a utilizar en el checkbox de la Pantalla
+  //bool _isChecked = false; // Variable a utilizar en el checkbox de la Pantalla
   bool _valid = true;
   List categories;
   final nameController = TextEditingController();

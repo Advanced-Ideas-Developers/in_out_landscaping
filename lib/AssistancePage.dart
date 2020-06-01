@@ -323,25 +323,19 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                     assis['check_in_time'] ==
                                                             null
                                                         ? () async {
-                                                            var time;
-                                                            await DatePicker
-                                                                .showTime12hPicker(
-                                                                    context,
-                                                                    showTitleActions:
-                                                                        true,
-                                                                    onConfirm:
-                                                                        (date) {
-                                                              time = date;
-                                                            },
-                                                                    locale:
-                                                                        LocaleType
-                                                                            .es);
+                                                            TimeOfDay time =
+                                                            await showTimePicker(
+                                                              context: context,
+                                                              initialTime: TimeOfDay.now(),
+                                                            );
+
+                                                            DateTime dateS = DateTime(now.year, now.month, now.day, time.hour, time.minute);
 
                                                             var inout = {
                                                               'id': assis['id'],
                                                               'employees_id': assis[
                                                                   'employees_id'],
-                                                              'check_in_time': time
+                                                              'check_in_time': dateS
                                                                   .toIso8601String()
                                                             };
 
@@ -408,7 +402,6 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                             'departure_time'] ==
                                                         null
                                                     ? () async {
-                                                        var time;
                                                         if (assis[
                                                                 'check_in_time'] ==
                                                             null) {
@@ -417,24 +410,19 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                           return;
                                                         }
 
-                                                        await DatePicker
-                                                            .showTime12hPicker(
-                                                                context,
-                                                                showTitleActions:
-                                                                    true,
-                                                                onConfirm:
-                                                                    (date) {
-                                                          time = date;
-                                                        },
-                                                                locale:
-                                                                    LocaleType
-                                                                        .es);
+                                                        TimeOfDay time =
+                                                            await showTimePicker(
+                                                              context: context,
+                                                              initialTime: TimeOfDay.now(),
+                                                            );
+
+                                                            DateTime dateS = DateTime(now.year, now.month, now.day, time.hour, time.minute);
 
                                                         var inout = {
                                                           'id': assis['id'],
                                                           'employees_id': assis[
                                                               'employees_id'],
-                                                          'departure_time': time
+                                                          'departure_time': dateS
                                                               .toIso8601String()
                                                         };
 
