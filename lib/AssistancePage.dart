@@ -197,7 +197,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                               ],
                             ),
                             textColor: Colors.white,
-                            color: Colors.greenAccent[700],
+                            color: Colors.blue,
                             onPressed: (assistance?.isEmpty ?? false)
                                 ? () async {
                                     setState(() {

@@ -183,10 +183,12 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                         value: 'Nombre',
                         child: Text('Nombre'),
                       ),
-                      PopupMenuItem(
-                        value: 'Categoría',
-                        child: Text('Categoría'),
-                      ),
+                      // Esto lo dejo comentado por el momento ya que no se va a 
+                      // buscar por categoría
+                      // PopupMenuItem(
+                      //   value: 'Categoría',
+                      //   child: Text('Categoría'),
+                      // ),
                     ],
                     icon: Icon(
                       Icons.more_vert,
@@ -440,9 +442,21 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                     width: 3,
                   ),
                 ), */
-              ),
+              )
             ],
           ),
+          Container(
+                child:Text(
+                  "(estos campos no deben ser llenados)",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                  ),
+                ),
+                padding: EdgeInsets.only(
+                    bottom:27.0
+                  ),
+              ),
           //Fin Primera parte del cuerpo de la pantalla
           //Inicio de la segunda parte de la pantalla Creacion de Textfield
           Container(
@@ -453,6 +467,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: nameController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Nombres',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -469,6 +484,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: lastNameController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Apellidos',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -485,6 +501,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: emailController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                         labelText: 'Email',
                         contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -514,6 +531,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: phoneController,
                     readOnly: true,
+                    enabled: false,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Teléfono',
@@ -531,6 +549,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: payHoursController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Pago por Hora',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -547,6 +566,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: daysController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Total de días Trabajados',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -563,6 +583,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: hoursController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Total de Horas Trabajadas',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),
@@ -579,6 +600,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                   child: TextField(
                     controller: payTotalController,
                     readOnly: true,
+                    enabled: false,
                     decoration: InputDecoration(
                       labelText: 'Total de Pago por Horas',
                       contentPadding: EdgeInsets.fromLTRB(20, 15, 0, 15),

@@ -15,6 +15,7 @@ class InOutLandScaping extends StatelessWidget {
         SystemUiOverlayStyle(statusBarColor: Colors.black));
     return MaterialApp(
       title: 'In Out Landscaping',
+      debugShowCheckedModeBanner: false,
       home: Login(),
       theme: ThemeData(
           brightness: Brightness.light,
