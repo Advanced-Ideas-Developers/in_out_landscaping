@@ -130,6 +130,16 @@ class API {
     }
   }
 
+  static Future<List> generarReporte(String initDate, String finalDate) async{
+    var response = await http.get(url + 'inout-only/$initDate/$finalDate');
+    if(response.statusCode == 200){
+      var responseJson = convert.jsonDecode(response.body);
+      return responseJson['respuesta'];
+    }else{
+      return null;
+    }
+  }
+
   static Future<bool> addAssistance(Map inout) async {
     var response = await http.post(url + 'inout',
         headers: {'content-type': 'application/json'},

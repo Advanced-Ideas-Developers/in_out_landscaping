@@ -17,6 +17,8 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   //Variables para los rangos de fechas
   String _initDate = "Inicio";
   String _finalDate = "Final";
+  String _initReporte = 'Comienzo';
+  String _finalReporte = 'Final';
   bool _valid = true;
   String filtro = 'Nombre';
   int employeeID;
@@ -700,7 +702,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                       'Calcular',
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: 'Georgia',
+                        fontFamily: 'Roboto',
                         fontSize: 20,
                         fontWeight: FontWeight.normal,
                       ),
@@ -746,6 +748,84 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                 ),
               ],
             ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                // margin: EdgeInsets.only(top: 20, left: 20),
+                child: Text(
+                  'Generar reporte de ingreso',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  FlatButton(
+                      onPressed: () {
+                        DatePicker.showDatePicker(context,
+                            showTitleActions: true,
+                            minTime: DateTime(2003, 1, 1),
+                            maxTime: DateTime(2222, 12, 31), onChanged: (date_report) {
+                          print('change $date_report');
+                        }, onConfirm: (date_report) {
+                          print('confirm $date_report');
+                          _initReporte = '${date_report.year}-${date_report.month}-${date_report.day}';
+                          setState(() {});
+                        }, currentTime: DateTime.now(), locale: LocaleType.es);
+                      },
+                      child: Text(
+                        '$_initReporte',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        DatePicker.showDatePicker(context,
+                            showTitleActions: true,
+                            minTime: DateTime(2003, 1, 1),
+                            maxTime: DateTime(2222, 12, 31), onChanged: (date_report) {
+                          print('change $date_report');
+                        }, onConfirm: (date_report) {
+                          print('confirm $date_report');
+                          _finalReporte = '${date_report.year}-${date_report.month}-${date_report.day}';
+                          setState(() {});
+                        }, currentTime: DateTime.now(), locale: LocaleType.es);
+                      },
+                      child: Text(
+                        '$_finalReporte',
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              RaisedButton(
+                    color: Colors.blueAccent,
+                    padding: EdgeInsets.fromLTRB(30, 8, 30, 8),
+                    child: Text(
+                      'Generar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Roboto',
+                        fontSize: 20,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                    onPressed: (){
+                      _generarReporte(_initReporte, _finalReporte);
+                    },
+                  ),
+            ],
           ),
           //Fin de la Tercera parte de la Pantalla Contenedores de Fecha
           //Inicio de la Ultima parte de la Pantalla DataTable con scroll
@@ -821,6 +901,12 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
         }()).toList();
       });
     });
+  }
+
+  void _generarReporte(String comienzo, String final_reporte) async{
+    await API.generarReporte(comienzo, final_reporte).then((response){
+      print(response);
+                      });
   }
 
   void _confirmDialog(Map employee){
