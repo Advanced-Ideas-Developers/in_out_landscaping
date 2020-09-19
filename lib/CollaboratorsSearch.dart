@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'RegisterCollaborator.dart';
 import 'Collaborator.dart';
 import 'package:email_validator/email_validator.dart';
@@ -185,7 +187,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                         value: 'Nombre',
                         child: Text('Nombre'),
                       ),
-                      // Esto lo dejo comentado por el momento ya que no se va a 
+                      // Esto lo dejo comentado por el momento ya que no se va a
                       // buscar por categoría
                       // PopupMenuItem(
                       //   value: 'Categoría',
@@ -266,31 +268,32 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                                         return Row(
                                           children: <Widget>[
                                             IconButton(
-                                          icon: Icon(Icons.edit),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        CollaboratorView(
-                                                          collaborator:
-                                                              employee,
-                                                        ))).then((value) {
-                                              _chargeEmployees();
-                                            });
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.delete
-                                          ),
-                                          onPressed: (){
-                                            _confirmDialog({'id':employee['id'],'state':0});
-                                          },
-                                        )
+                                              icon: Icon(Icons.edit),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CollaboratorView(
+                                                              collaborator:
+                                                                  employee,
+                                                            ))).then((value) {
+                                                  _chargeEmployees();
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.delete),
+                                              onPressed: () {
+                                                _confirmDialog({
+                                                  'id': employee['id'],
+                                                  'state': 0
+                                                });
+                                              },
+                                            )
                                           ],
                                         );
-                                      }else{
+                                      } else {
                                         return Text('');
                                       }
                                     }()),
@@ -448,17 +451,15 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
             ],
           ),
           Container(
-                child:Text(
-                  "(estos campos no deben ser llenados)",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.blueAccent,
-                  ),
-                ),
-                padding: EdgeInsets.only(
-                    bottom:27.0
-                  ),
+            child: Text(
+              "(estos campos no deben ser llenados)",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.blueAccent,
               ),
+            ),
+            padding: EdgeInsets.only(bottom: 27.0),
+          ),
           //Fin Primera parte del cuerpo de la pantalla
           //Inicio de la segunda parte de la pantalla Creacion de Textfield
           Container(
@@ -713,26 +714,29 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
                       var totalDays;
                       var totalPay = 0.0;
 
-                      if(_initDate == 'Inicio'){
+                      if (_initDate == 'Inicio') {
                         _dialog('Debe seleccionar una hora Inicial');
                         return;
                       }
 
-                      if(_finalDate == 'Final'){
+                      if (_finalDate == 'Final') {
                         _dialog('Debe seleccionar una hora Final');
                         return;
                       }
 
-                      await API.getHoursEmployee(employeeID, _initDate, _finalDate).then((response){
+                      await API
+                          .getHoursEmployee(employeeID, _initDate, _finalDate)
+                          .then((response) {
                         employeePay = response;
                       });
 
-                      if(employeePay.isEmpty){
-                        _dialog('No se encontraron registros para el trabajador en estas fechas');
+                      if (employeePay.isEmpty) {
+                        _dialog(
+                            'No se encontraron registros para el trabajador en estas fechas');
                         return;
                       }
 
-                      for(int i = 0; i < employeePay.length; i++){
+                      for (int i = 0; i < employeePay.length; i++) {
                         totalHours += employeePay[i]['total_horas'];
                         totalPay += employeePay[i]['total_pay'];
                       }
@@ -742,7 +746,7 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
 
                       daysController.text = totalDays.toString();
                       hoursController.text = totalHours.toString();
-                      payTotalController.text = totalPay.toString(); 
+                      payTotalController.text = totalPay.toString();
                     },
                   ),
                 ),
@@ -755,76 +759,78 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
             children: <Widget>[
               Container(
                 // margin: EdgeInsets.only(top: 20, left: 20),
-                child: Text(
-                  'Generar reporte de ingreso',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center
-                ),
+                child: Text('Generar reporte de ingreso',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center),
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   FlatButton(
-                      onPressed: () {
-                        DatePicker.showDatePicker(context,
-                            showTitleActions: true,
-                            minTime: DateTime(2003, 1, 1),
-                            maxTime: DateTime(2222, 12, 31), onChanged: (date_report) {
-                          print('change $date_report');
-                        }, onConfirm: (date_report) {
-                          print('confirm $date_report');
-                          _initReporte = '${date_report.year}-${date_report.month}-${date_report.day}';
-                          setState(() {});
-                        }, currentTime: DateTime.now(), locale: LocaleType.es);
-                      },
-                      child: Text(
-                        '$_initReporte',
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 20,
-                        ),
+                    onPressed: () {
+                      DatePicker.showDatePicker(context,
+                          showTitleActions: true,
+                          minTime: DateTime(2003, 1, 1),
+                          maxTime: DateTime(2222, 12, 31),
+                          onChanged: (date_report) {
+                        print('change $date_report');
+                      }, onConfirm: (date_report) {
+                        print('confirm $date_report');
+                        _initReporte =
+                            '${date_report.year}-${date_report.month}-${date_report.day}';
+                        setState(() {});
+                      }, currentTime: DateTime.now(), locale: LocaleType.es);
+                    },
+                    child: Text(
+                      '$_initReporte',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 20,
                       ),
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        DatePicker.showDatePicker(context,
-                            showTitleActions: true,
-                            minTime: DateTime(2003, 1, 1),
-                            maxTime: DateTime(2222, 12, 31), onChanged: (date_report) {
-                          print('change $date_report');
-                        }, onConfirm: (date_report) {
-                          print('confirm $date_report');
-                          _finalReporte = '${date_report.year}-${date_report.month}-${date_report.day}';
-                          setState(() {});
-                        }, currentTime: DateTime.now(), locale: LocaleType.es);
-                      },
-                      child: Text(
-                        '$_finalReporte',
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 20,
-                        ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      DatePicker.showDatePicker(context,
+                          showTitleActions: true,
+                          minTime: DateTime(2003, 1, 1),
+                          maxTime: DateTime(2222, 12, 31),
+                          onChanged: (date_report) {
+                        print('change $date_report');
+                      }, onConfirm: (date_report) {
+                        print('confirm $date_report');
+                        _finalReporte =
+                            '${date_report.year}-${date_report.month}-${date_report.day}';
+                        setState(() {});
+                      }, currentTime: DateTime.now(), locale: LocaleType.es);
+                    },
+                    child: Text(
+                      '$_finalReporte',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 20,
                       ),
                     ),
+                  ),
                 ],
               ),
               RaisedButton(
-                    color: Colors.blueAccent,
-                    padding: EdgeInsets.fromLTRB(30, 8, 30, 8),
-                    child: Text(
-                      'Generar',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
-                        fontSize: 20,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    onPressed: (){
-                      _generarReporte(_initReporte, _finalReporte);
-                    },
+                color: Colors.blueAccent,
+                padding: EdgeInsets.fromLTRB(30, 8, 30, 8),
+                child: Text(
+                  'Generar',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Roboto',
+                    fontSize: 20,
+                    fontWeight: FontWeight.normal,
                   ),
+                ),
+                onPressed: () {
+                  _generarReporte(_initReporte, _finalReporte);
+                },
+              ),
             ],
           ),
           //Fin de la Tercera parte de la Pantalla Contenedores de Fecha
@@ -892,54 +898,59 @@ class _CollaboratorSearchViewState extends State<CollaboratorSearchView> {
   void _chargeEmployees() {
     API.getEmployees().then((response) {
       setState(() {
-        employees = response.where((employee)=>(){
-          if(employee['state']==1){
-            return true;
-          }else{
-            return false;
-          }
-        }()).toList();
+        employees = response
+            .where((employee) => () {
+                  if (employee['state'] == 1) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }())
+            .toList();
       });
     });
   }
 
-  void _generarReporte(String comienzo, String final_reporte) async{
-    await API.generarReporte(comienzo, final_reporte).then((response){
-      print(response);
-                      });
+  void _generarReporte(String comienzo, String finalReporte) async {
+    final status = await Permission.storage.request();
+
+    if (status.isGranted) {
+      await API.generarReporte(comienzo, finalReporte);
+    } else {
+      print('bye');
+    }
   }
 
-  void _confirmDialog(Map employee){
+  void _confirmDialog(Map employee) {
     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context){
-        return AlertDialog(
-          title: Text('Confirmar Eliminación'),
-          content: Text('¿Desea eliminar a este Colaborador?'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Aceptar'),
-              onPressed: () async {
-                await API.updateEmployee(employee).then((response){
-                  setState(() {
-                    _chargeEmployees();
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Confirmar Eliminación'),
+            content: Text('¿Desea eliminar a este Colaborador?'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Aceptar'),
+                onPressed: () async {
+                  await API.updateEmployee(employee).then((response) {
+                    setState(() {
+                      _chargeEmployees();
+                    });
                   });
-                });
-                Navigator.of(context).pop();
-                _dialog('¡Colaborador eliminado correctamente!');
-              },
-            ),
-            FlatButton(
-              child: Text('Cancelar'),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      }
-    );
+                  Navigator.of(context).pop();
+                  _dialog('¡Colaborador eliminado correctamente!');
+                },
+              ),
+              FlatButton(
+                child: Text('Cancelar'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 
   void _dialog(String message) {

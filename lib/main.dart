@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'HomePage.dart';
 import 'HTTP/API.dart';
 import 'Classes/Globals.dart' as globals;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(
+      debug: true // optional: set false to disable printing logs to console
+      );
+
   runApp(InOutLandScaping()); //Originalmente aqui  estaba InOutLandScaping()
 }
 
@@ -63,7 +69,7 @@ class _LoginState extends State<Login> {
     );
 
     return Scaffold(
-        body: Stack(  
+        body: Stack(
       children: <Widget>[
         ListView(
           children: <Widget>[

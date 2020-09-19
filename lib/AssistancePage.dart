@@ -177,7 +177,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                 Container(
                   alignment: Alignment.centerLeft,
                   margin: EdgeInsets.only(bottom: 10, left: 20),
-                  child: Text('Fecha: ${now.day}/${now.month}/${now.year}', style: TextStyle(fontSize: 15)),
+                  child: Text('Fecha: ${now.day}/${now.month}/${now.year}',
+                      style: TextStyle(fontSize: 15)),
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 10, left: 15),
@@ -209,7 +210,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                       if (employee[i]['state'] == 1) {
                                         inout['employees_id'] =
                                             employee[i]['id'];
-                                        inout['created_at'] = 
+                                        inout['created_at'] =
                                             now.toIso8601String();
                                         await API
                                             .addAssistance(inout)
@@ -222,7 +223,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                 : null,
                             disabledColor: Colors.greenAccent[100],
                           );
-                        }else{
+                        } else {
                           return Container();
                         }
                       }()
@@ -319,38 +320,44 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                     fontSize: 14,
                                                   ),
                                                 ),
-                                                onPressed:
-                                                    assis['check_in_time'] ==
-                                                            null
-                                                        ? () async {
-                                                            TimeOfDay time =
+                                                onPressed: assis[
+                                                            'check_in_time'] ==
+                                                        null
+                                                    ? () async {
+                                                        TimeOfDay time =
                                                             await showTimePicker(
-                                                              context: context,
-                                                              initialTime: TimeOfDay.now(),
-                                                            );
+                                                          context: context,
+                                                          initialTime:
+                                                              TimeOfDay.now(),
+                                                        );
 
-                                                            DateTime dateS = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+                                                        DateTime dateS =
+                                                            DateTime(
+                                                                now.year,
+                                                                now.month,
+                                                                now.day,
+                                                                time.hour,
+                                                                time.minute);
 
-                                                            var inout = {
-                                                              'id': assis['id'],
-                                                              'employees_id': assis[
-                                                                  'employees_id'],
-                                                              'check_in_time': dateS
-                                                                  .toIso8601String()
-                                                            };
+                                                        var inout = {
+                                                          'id': assis['id'],
+                                                          'employees_id': assis[
+                                                              'employees_id'],
+                                                          'check_in_time': dateS
+                                                              .toIso8601String()
+                                                        };
 
-                                                            await API
-                                                                .updateAssistance(
-                                                                    inout)
-                                                                .then(
-                                                                    (response) {
-                                                              if (response) {
-                                                                setState(() {
-                                                                  _chargeAssistance();
-                                                                });
-                                                              }
+                                                        await API
+                                                            .updateAssistance(
+                                                                inout)
+                                                            .then((response) {
+                                                          if (response) {
+                                                            setState(() {
+                                                              _chargeAssistance();
                                                             });
-                                                            /* DatePicker.showDatePicker(
+                                                          }
+                                                        });
+                                                        /* DatePicker.showDatePicker(
                                                       context,
                                                       showTitleActions: true,
                                                       onConfirm: (time) {
@@ -362,7 +369,7 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                       currentTime:
                                                           DateTime.now(),
                                                       locale: LocaleType.es); */
-                                                            /* setState(() {
+                                                        /* setState(() {
                                                     if (assis[
                                                             'check_in_time'] ==
                                                         null) {
@@ -371,8 +378,8 @@ class _AssistanceViewState extends State<AssistanceView> {
                                                     return assis[
                                                         'check_in_time'];
                                                   }); */
-                                                          }
-                                                        : null,
+                                                      }
+                                                    : null,
                                               ),
                                             ),
                                             DataCell(
@@ -412,11 +419,18 @@ class _AssistanceViewState extends State<AssistanceView> {
 
                                                         TimeOfDay time =
                                                             await showTimePicker(
-                                                              context: context,
-                                                              initialTime: TimeOfDay.now(),
-                                                            );
+                                                          context: context,
+                                                          initialTime:
+                                                              TimeOfDay.now(),
+                                                        );
 
-                                                            DateTime dateS = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+                                                        DateTime dateS =
+                                                            DateTime(
+                                                                now.year,
+                                                                now.month,
+                                                                now.day,
+                                                                time.hour,
+                                                                time.minute);
 
                                                         var inout = {
                                                           'id': assis['id'],
@@ -480,11 +494,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                       .format(DateTime.parse(assis['created_at']));
                   //print(formattedNow + ' ' + formattedAssis);
                   if (formattedAssis == formattedNow) {
-                    if(globals.role == '0'){
+                    if (globals.role == '0') {
                       return true;
-                    }else if(globals.category == assis['employee']['categories_id']){
+                    } else if (globals.category ==
+                        assis['employee']['categories_id']) {
                       return true;
-                    }else{
+                    } else {
                       return false;
                     }
                   } else {
@@ -507,11 +522,12 @@ class _AssistanceViewState extends State<AssistanceView> {
                       .format(DateTime.parse(assis['created_at']));
                   //print(formattedNow + ' ' + formattedAssis);
                   if (formattedAssis == formattedNow && globals.role == '0') {
-                    if(globals.role == '0'){
+                    if (globals.role == '0') {
                       return true;
-                    }else if(globals.category == assis['employee']['categories_id']){
+                    } else if (globals.category ==
+                        assis['employee']['categories_id']) {
                       return true;
-                    }else{
+                    } else {
                       return false;
                     }
                   } else {

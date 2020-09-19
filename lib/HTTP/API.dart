@@ -1,6 +1,10 @@
 import 'dart:convert' as convert;
+import 'dart:io';
+import 'dart:math';
 //import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 const url = 'http://161.35.100.25/emps/';
 
@@ -130,14 +134,16 @@ class API {
     }
   }
 
-  static Future<List> generarReporte(String initDate, String finalDate) async{
-    var response = await http.get(url + 'inout-only/$initDate/$finalDate');
-    if(response.statusCode == 200){
-      var responseJson = convert.jsonDecode(response.body);
-      return responseJson['respuesta'];
-    }else{
-      return null;
-    }
+  static Future<void> generarReporte(String initDate, String finalDate) async {
+    final externalDir = await getExternalStorageDirectory();
+
+    final id = await FlutterDownloader.enqueue(
+        url: 'http://161.35.100.25/emps/inout-only/$initDate/$finalDate',
+        savedDir: externalDir.path,
+        fileName: 'asistencia',
+        showNotification: true,
+        openFileFromNotification: true,
+    );
   }
 
   static Future<bool> addAssistance(Map inout) async {
@@ -173,12 +179,14 @@ class API {
     }
   }
 
-  static Future<List> getHoursEmployee(int id, String initDate, String finalDate) async{
-    var response = await http.get(url + 'inout-between/$id/$initDate/$finalDate');
-    if(response.statusCode == 200){
+  static Future<List> getHoursEmployee(
+      int id, String initDate, String finalDate) async {
+    var response =
+        await http.get(url + 'inout-between/$id/$initDate/$finalDate');
+    if (response.statusCode == 200) {
       var responseJson = convert.jsonDecode(response.body);
       return responseJson['datos'];
-    }else{
+    } else {
       return null;
     }
   }
